@@ -18,7 +18,7 @@ class UserController extends Controller
 
     /**
     * TOPページ表示
-    * @param null
+    * @param NULL
     * @return View
     */
     public function showTop()
@@ -28,8 +28,8 @@ class UserController extends Controller
 
     /**
     * ユーザー新規登録フォーム表示
-    * @param
-    * @return
+    * @param NULL
+    * @return View
     */
     public function showRegistForm()
     {
@@ -37,13 +37,13 @@ class UserController extends Controller
     }
 
     /**
-    * ユーザー新規登録確認
-    * @param
-    * @return
-    */
+     * ユーザー新規登録確認
+     * @param Request $request
+     * @return View
+     */
     public function confirmRegistUser(Request $request)
     {
-        // フォームのデータを取得 //
+        // フォームのデータを取得
         $login_id = $request->login_id;
         $password = $request->password;
         $nickname = $request->nickname;
@@ -57,55 +57,55 @@ class UserController extends Controller
 
     /**
     * ユーザー新規登録
-    * @param
-    * @return
+    * @param Request $request
+    * @return View
     */
     public function registUser(Request $request)
     {
         $admin = new Admin;
 
-        // フォームのデータを取得 //
+        // フォームのデータを取得
         $login_id = $request->login_id;
         $password = $request->password;
         $nickname = $request->nickname;
 
         $admin->fill(['login_id' => $login_id, 'password' => Hash::make($password), 'nickname' => $nickname]);
 
-        // Adminテーブルに保存する //
-        if (true == $admin->save()) {
+        // Adminテーブルに保存する
+        if ($admin->save()) {
             return view('app.thread.index');
         }
-        else {
-            return view('app.user.create');
-        }
+
+        return view('app.user.create');
+
     }
 
     /**
     * ユーザーログイン
-    * @param
-    * @return
+    * @param Request $request
+    * @return View
     */
     public function loginUser(Request $request)
     {
-        // フォームからログインに使用するデータを取得 //
+        // フォームからログインに使用するデータを取得
          $auth_info = [
              'login_id' => $request->login_id,
              'password' => $request->password
         ];
 
-        if (true == Auth::attempt($auth_info)){
-            // 認証成功の場合はスレッド一覧に遷移する //
+        if (Auth::attempt($auth_info)){
+            // 認証成功の場合はスレッド一覧に遷移する
             return view('app.thread.index');
         }
-        else {
-            return view('app.user.top');
-        }
+
+        return view('app.user.top');
+
     }
 
     /**
     * ユーザーログアウト
-    * @param
-    * @return
+    * @param NULL
+    * @return View
     */
     public function logoutUser()
     {
@@ -116,8 +116,8 @@ class UserController extends Controller
 
     /**
     * ユーザー退会確認画面
-    *@param
-    *@return
+    *@param NULL
+    *@return View
     */
     public function showConfirmDeleteUser()
     {
@@ -126,23 +126,26 @@ class UserController extends Controller
 
     /**
     * ユーザー退会
-    * @param
-    * @return
+    * @param Admin $admin
+    * @return View
     */
-    public function deleteUser()
+    public function deleteUser(Admin $admin)
     {
         // 現在ログイン中のユーザー情報を取得 //
         $userid = Auth::id();
 
-        //ログアウトしてセッション・メモリからユーザー情報削除 //
+        //ログアウトしてセッション・メモリからユーザー情報削除
         Auth::logout();
 
-        // Adminテーブルから該当のユーザーを削除 //
-        if (true == DB::table('admins')->where('id', $userid)) {
-            return view('app.user.deleteComplete');
+        $admin = Admin::where('id', $userid)->first();
+
+        if ($admin->id === $userid) {
+            // Adminテーブルから該当のユーザーを削除
+            if ($admin->destroy($userid)) {
+                return view('app.user.deleteComplete');
+            }
         }
-        else {
-            return redirect()->back();
-        }
+
+        return redirect()->back();
     }
 }
