@@ -21,7 +21,7 @@ class ThreadController extends Controller
      */
     public function showCreateThread()
     {
-        return redirect()->route('thread.create.show');
+        return view( route('thread.create.show'));
     }
 
     /**
@@ -41,10 +41,10 @@ class ThreadController extends Controller
         $thread->fill(['thread_name' => $thread_name, 'quantity' => 0]);
 
         if ($thread->save()) {
-            return redirect()->route('thread.index');
+            return view(route('thread.index'));
         }
         else {
-            return redirect()->route('thread.create');
+            return view(route('thread.create'));
         }
     }
 
