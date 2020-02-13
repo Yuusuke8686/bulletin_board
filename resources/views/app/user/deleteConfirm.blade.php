@@ -9,7 +9,7 @@
 <body>
     <div>ユーザー削除します。戻れません。</div>
     <button>
-        <a href="/user/delete">削除</a>
+        <a href="{{ route('user.delete') }}">削除</a>
     </button>
 </body>
 </html>

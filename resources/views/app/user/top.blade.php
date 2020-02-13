@@ -8,7 +8,7 @@
 </head>
 <body>
     <p>こんにちわん</p>
-    <form action="/login" method="post">
+    <form action="{{ route('login')}}" method="post">
         @csrf
         <label for="login_id">ログインID</label>
             <input type="text" name="login_id">
@@ -19,7 +19,7 @@
 
     <p>登録</p>
     <button>
-        <a href="/user/create">ユーザー登録</a>
+        <a href="{{ route('user.create')}}">ユーザー登録</a>
     </button>
 </body>
 </html>
