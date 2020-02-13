@@ -11,23 +11,23 @@
 |
 */
 
-// トップ画面 //
+// トップ画面
 Route::get('/top', 'UserController@showTop');
 
-// ログイン //
+// ログイン
 Route::post('/login', 'UserController@loginUser');
 
-// ユーザー新規登録画面 //
+// ユーザー新規登録画面
 Route::get('/user/create', 'UserController@showRegistForm');
 
 Route::post('/user/confirm', 'UserController@confirmRegistUser');
 
 Route::post('/user/complete', 'UserController@registUser');
 
-// ログアウト //
+// ログアウト
 Route::get('/logout', 'UserController@logoutUser');
 
-// ユーザー削除確認 //
+// ユーザー削除確認
 Route::get('/user/delete/confirm', 'UserController@showConfirmDeleteUser');
 
 Route::get('/user/delete', 'UserController@deleteUser');
@@ -39,5 +39,10 @@ Route::get('/thread/index', 'ThreadController@indexThread');
 Route::get('/thread/create', 'ThreadController@showCreateThread');
 
 Route::post('/thread/create', 'ThreadController@createThread');
+
+// スレッド削除
+Route::get('/thread/delete/confirm/{thread_id}', 'ThreadController@showThreadDeleteConfirm');
+
+Route::get('thread/delete/{thread_id}', 'ThreadController@deleteThread');
 
 Auth::routes();

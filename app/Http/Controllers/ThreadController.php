@@ -8,7 +8,6 @@ use App\Model\Thread;
 
 class ThreadController extends Controller
 {
-    //
     /**
      * TODO とりあえずControllerにベタ書き、時間があればサービス層作る
      */
@@ -60,5 +59,33 @@ class ThreadController extends Controller
 
         // スレッド一覧画面にデータを持っていく
         return view('app.thread.index', ['thread_data' => $thread_data]);
+    }
+
+    /**
+     * スレッド削除確認画面表示
+     * @param int $thread_id
+     * @return View
+     */
+    public function showThreadDeleteConfirm(int $thread_id)
+    {
+        return view('app.thread.deleteConfirm', ['thread_id' => $thread_id]);
+    }
+
+    /**
+     * スレッド削除機能
+     * @param int $thread_id
+     * @param Request $request
+     * @param Thread $thread
+     * @return View
+     */
+    public function deleteThread(Request $request, Thread $thread, int $thread_id)
+    {
+        // 対象のスレッドを削除する
+        if (Thread::where('id', $thread_id)->delete()){
+            $request->session()->flash('thread_index_flash', 'スレッドを削除しました');
+        }
+
+        $request->session()->flash('thread_index_flash', 'スレッドの削除に失敗しました');
+        return view('app.thread.index');
     }
 }
