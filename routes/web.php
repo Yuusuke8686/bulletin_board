@@ -15,7 +15,9 @@
 Route::get('/top', 'UserController@showTop');
 
 // ログイン
-Route::post('/login', 'UserController@loginUser')->name('login');
+Route::post('/login', 'UserController@loginUser')->name('login.send');
+
+Route::get('/login', 'UserController@loginUser')->name('login.show');
 
 // ユーザー新規登録画面
 Route::get('/user/create', 'UserController@showRegistForm')->name('user.create');
@@ -25,7 +27,7 @@ Route::post('/user/confirm', 'UserController@confirmRegistUser')->name('user.con
 Route::post('/user/complete', 'UserController@registUser')->name('user.complete');
 
 // ログアウト
-Route::get('/logout', 'UserController@logoutUser');
+Route::get('/logout', 'UserController@logoutUser')->name('logout');
 
 // ユーザー削除確認
 Route::get('/user/delete/confirm', 'UserController@showConfirmDeleteUser');
