@@ -9,7 +9,7 @@
 <body>
     <p>登録完了！！</p>
     <button>
-        <a href="/thread/index">掲示板へ</a>
+        <a href="{{ route('thread.index')}}">掲示板へ</a>
     </button>
 </body>
 </html>

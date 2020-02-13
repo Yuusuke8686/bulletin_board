@@ -9,7 +9,7 @@
 <body>
     <div>退会完了</div>
     <button>
-        <a href="/top">トップへ戻る</a>
+        <a href="{{ route('top')}}">トップへ戻る</a>
     </button>
 </body>
 </html>

@@ -22,9 +22,9 @@ class ThreadController extends Controller
     public function indexThread()
     {
         // threadテーブルからデータを取得
-        $thread_data = Thread::all();
+        $threads = Thread::all();
 
         // スレッド一覧画面にデータを持っていく
-        return view('app.thread.index', ['thread_data' => $thread_data]);
+        return view('app.thread.index', ['threads' => $threads]);
     }
 }
