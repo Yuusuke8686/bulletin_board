@@ -20,9 +20,9 @@ Route::post('/login', 'UserController@loginUser');
 // ユーザー新規登録画面
 Route::get('/user/create', 'UserController@showRegistForm');
 
-Route::post('/user/confirm', 'UserController@confirmRegistUser');
+Route::post('/user/confirm', 'UserController@confirmRegistUser')->name('user.confirm');
 
-Route::post('/user/complete', 'UserController@registUser');
+Route::post('/user/complete', 'UserController@registUser')->name('user.complete');
 
 // ログアウト
 Route::get('/logout', 'UserController@logoutUser');
@@ -30,15 +30,15 @@ Route::get('/logout', 'UserController@logoutUser');
 // ユーザー削除確認
 Route::get('/user/delete/confirm', 'UserController@showConfirmDeleteUser');
 
-Route::get('/user/delete', 'UserController@deleteUser');
+Route::get('/user/delete', 'UserController@deleteUser')->name('user.delete');
 
 // スレッド一覧画面
-Route::get('/thread/index', 'ThreadController@indexThread');
+Route::get('/thread/index', 'ThreadController@indexThread')->name('thread.Index');
 
 // スレッド作成
-Route::get('/thread/create', 'ThreadController@showCreateThread');
+Route::get('/thread/create', 'ThreadController@showCreateThread')->name('thread.create.show');
 
-Route::post('/thread/create', 'ThreadController@createThread');
+Route::post('/thread/create', 'ThreadController@createThread')->name('thread.create.send');
 
 // スレッド削除
 Route::get('/thread/delete/confirm/{thread_id}', 'ThreadController@showThreadDeleteConfirm')->name('thread.delete.confirm');

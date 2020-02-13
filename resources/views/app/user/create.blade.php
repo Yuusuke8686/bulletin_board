@@ -8,7 +8,7 @@
 </head>
 <body>
     <p>ユーザー登録</p>
-    <form action="/user/confirm" method="post">
+    <form action="{{ route('user.confirm') }}" method="post">
         @csrf
         <label for="login_id">ログインID</label>
             <input type="text" name="login_id">

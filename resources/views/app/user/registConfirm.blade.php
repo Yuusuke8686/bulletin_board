@@ -8,7 +8,7 @@
 </head>
 <body>
     <p>以下の内容で登録します</p>
-    <form action="/user/complete" method="post">
+    <form action="{{ route('user.complete')}}" method="post">
         @csrf
         <input type="text" name="login_id" value={{$login_id}}>
         <input type="text" name="password" value={{$password}}>

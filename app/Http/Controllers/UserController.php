@@ -142,7 +142,7 @@ class UserController extends Controller
         if ($admin->id === $userid) {
             // Adminテーブルから該当のユーザーを削除
             if ($admin->destroy($userid)) {
-                return view('app.user.deleteComplete');
+                return redirect()->route('user.deleteComplete');
             }
         }
 

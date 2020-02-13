@@ -20,7 +20,7 @@ class ThreadController extends Controller
      */
     public function showCreateThread()
     {
-        return view('app.thread.create');
+        return view( route('thread.create.show'));
     }
 
     /**
@@ -40,10 +40,10 @@ class ThreadController extends Controller
         $thread->fill(['thread_name' => $thread_name, 'quantity' => 0]);
 
         if ($thread->save()) {
-            return view('app.thread.index');
+            return view(route('thread.index'));
         }
         else {
-            return view('app.thread.create');
+            return view(route('thread.create'));
         }
     }
 
@@ -55,7 +55,7 @@ class ThreadController extends Controller
     public function indexThread()
     {
         // threadテーブルからデータを取得
-        $thread_data = Thread::all();
+        $threads = Thread::all();
 
         // スレッド一覧画面にデータを持っていく
         return view(route('thread.index'), ['thread_data' => $thread_data]);

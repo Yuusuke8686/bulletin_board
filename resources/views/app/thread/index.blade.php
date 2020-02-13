@@ -9,17 +9,17 @@
 <body>
     <h2>スレッド一覧ページ</h2>
 
-@foreach($thread_data as $data)
+@foreach($threads as $thread)
     <ul>
-        <li>{{$data->id}}</li>
+        <li>{{$thread->id}}</li>
         <li>
-            <a href="/thread/comment/{$data->id}">
-                {{$data->thread_name}}
+            <a href={{ route('thread.index', ['thread_id' => $thread->id]) }}>
+                {{$thread->thread_name}}
             </a>
         </li>
-        <li>{{$data->quantity}}</li>
-        <li>{{$data->created_at}}</li>
-        <li>{{$data->update_at}}</li>
+        <li>{{$thread->quantity}}</li>
+        <li>{{$thread->created_at}}</li>
+        <li>{{$thread->update_at}}</li>
     </ul>
 
     <button>
