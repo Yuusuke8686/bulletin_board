@@ -15,6 +15,40 @@ class ThreadController extends Controller
 
 
     /**
+     * スレッド作成画面表示
+     * @param NULL
+     * @return View
+     */
+    public function showCreateThread()
+    {
+        return view( route('thread.create.show'));
+    }
+
+    /**
+     * スレッド作成機能
+     * @param Request $request
+     * @return View
+     */
+    public function createThread(Request $request)
+    {
+        $thread = new Thread();
+
+        // フォームからタイトルを取得
+        $thread_name = $request->thread_name;
+
+        // TODO バリデーション
+
+        $thread->fill(['thread_name' => $thread_name, 'quantity' => 0]);
+
+        if ($thread->save()) {
+            return view(route('thread.index'));
+        }
+        else {
+            return view(route('thread.create'));
+        }
+    }
+
+    /**
      * スレッド一覧表示機能
      * @param NULL
      * @return View
