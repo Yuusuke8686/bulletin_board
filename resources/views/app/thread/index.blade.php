@@ -8,22 +8,32 @@
 </head>
 <body>
     <h2>スレッド一覧ページ</h2>
-
+{{--@if(isset($threads))--}}
 @foreach($threads as $thread)
+    @if($thread->isDelete == 0)
     <ul>
         <li>{{$thread->id}}</li>
         <li>
-            <a href={{ route('thread.index', ['thread_id' => $thread->id]) }}>
+            <a href={{ route('thread.comment', ['thread_id' => $thread->id]) }}>
                 {{$thread->thread_name}}
             </a>
         </li>
         <li>{{$thread->quantity}}</li>
         <li>{{$thread->created_at}}</li>
         <li>{{$thread->update_at}}</li>
+        <li>
+            <button>
+                <a href="{{route('thread.delete.confirm', ['thread_id' => $thread->id])}}">削除</a>
+            </button>
+        </li>
     </ul>
-
+    @endif
+@endforeach
+{{--@else--}}
+    <div>スレッドがありません</div>
+{{--@endif--}}
     <button>
-        <a href="/thread/create">スレッド作成</a>
+        <a href="{{route('thread.create.show')}}">スレッド作成</a>
     </button>
 </body>
 </html>

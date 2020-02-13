@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Model\Thread;
 
 class ThreadController extends Controller
@@ -20,7 +19,7 @@ class ThreadController extends Controller
      */
     public function showCreateThread()
     {
-        return view( route('thread.create.show'));
+        return view('app.thread.create');
     }
 
     /**
@@ -37,28 +36,28 @@ class ThreadController extends Controller
 
         // TODO バリデーション
 
-        $thread->fill(['thread_name' => $thread_name, 'quantity' => 0]);
+        $thread->fill(['thread_name' => $thread_name, 'quantity' => 0, 'isDelete' => false]);
 
         if ($thread->save()) {
-            return view(route('thread.index'));
+            return view('app.thread.index');
         }
         else {
-            return view(route('thread.create'));
+            return view('app.thread.create');
         }
     }
 
     /**
      * スレッド一覧表示機能
-     * @param NULL
+     * @param Thread $thread
      * @return View
      */
-    public function indexThread()
+    public function indexThread(Thread $thread)
     {
         // threadテーブルからデータを取得
-        $threads = Thread::all();
+        $threads = $thread->all();
 
         // スレッド一覧画面にデータを持っていく
-        return view(route('thread.index'), ['thread_data' => $thread_data]);
+        return view('app.thread.index', compact('threads'));
     }
 
     /**
@@ -68,7 +67,7 @@ class ThreadController extends Controller
      */
     public function showThreadDeleteConfirm(int $thread_id)
     {
-        return view(route('thread.delete.Confirm', ['thread_id' => $thread_id]));
+        return view('app.thread.deleteConfirm', ['thread_id' => $thread_id]);
     }
 
     /**
@@ -81,11 +80,17 @@ class ThreadController extends Controller
     {
         // 削除処理後に表示されるメッセージ
         $thread_index_message = 'スレッドの削除に失敗しました。';
-        // 対象のスレッドを削除する
-        if ($thread->destroy($thread_id)){
-            $thread_index_message = 'スレッドの削除に成功しました。';
+
+        // Threadsテーブルの該当レコードのisDeleteフラグをtrueに更新する
+        $is_delete = ['isDelete' => 1];
+        if ($thread->find($thread_id)->update($is_delete)) {
+           $thread_index_message = 'スレッドの削除に成功しました';
+            // threadテーブルからデータを取得
+            $threads = $thread->all();
+
         }
 
-        return view(route('thread.index'))->with('thread_index_message', $thread_index_message);
+        return view('app.thread.index', compact('threads'))->with('thread_index_message', $thread_index_message);
+
     }
 }

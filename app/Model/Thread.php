@@ -10,5 +10,16 @@ class Thread extends Model
         'id'
     ];
 
-    // リレーションはコメントCRUD実装時に一緒に実装
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function admin()
+    {
+        return $this->hasOne(Admin::class);
+    }
 }

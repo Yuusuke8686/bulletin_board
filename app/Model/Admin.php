@@ -9,5 +9,19 @@ class Admin extends Authenticatable
 {
     protected $fillable = ['login_id', 'password', 'nickname'];
 
-    // リレーションはコメントCRUD実装時に一緒に実装
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function threads()
+    {
+        return $this->hasMany(Thread::class);
+    }
 }

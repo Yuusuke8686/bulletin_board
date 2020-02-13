@@ -11,4 +11,8 @@ class Comment extends Model
     ];
 
     // リレーションはコメントCRUD実装時に一緒に実装
+    public function thread()
+    {
+        return $this->hasOne(Thread::class);
+    }
 }

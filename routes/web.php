@@ -15,10 +15,10 @@
 Route::get('/top', 'UserController@showTop');
 
 // ログイン
-Route::post('/login', 'UserController@loginUser');
+Route::post('/login', 'UserController@loginUser')->name('login');
 
 // ユーザー新規登録画面
-Route::get('/user/create', 'UserController@showRegistForm');
+Route::get('/user/create', 'UserController@showRegistForm')->name('user.create');
 
 Route::post('/user/confirm', 'UserController@confirmRegistUser')->name('user.confirm');
 
@@ -43,6 +43,19 @@ Route::post('/thread/create', 'ThreadController@createThread')->name('thread.cre
 // スレッド削除
 Route::get('/thread/delete/confirm/{thread_id}', 'ThreadController@showThreadDeleteConfirm')->name('thread.delete.confirm');
 
-Route::get('thread/delete/{thread_id}', 'ThreadController@deleteThread')->name('thread.delete');
+Route::get('/thread/delete/{thread_id}', 'ThreadController@deleteThread')->name('thread.delete');
 
-Auth::routes();
+// コメント一覧 //
+Route::get('/thread/comment/{thread_id}', 'CommentController@showCommentIndex')->name('thread.comment');
+
+// コメント編集 //
+Route::get('/thread/comment/edit/{comment_id}', 'CommentController@xxxx')->name('thread.comment.edit.show');
+
+Route::post('/thread/comment/edit/{comment_id}', 'CommentController@xxxx')->name('thread.comment.edit.send');
+
+// コメント削除 //
+Route::get('/thread/comment/delete/confirm/{comment_id}', 'CommentController@xxx')->name('thread.comment.delete.confirm');
+
+Route::post('/thread/comment/delete/{comment_id}', 'CommentController@xxx')->name('thread.comment.delete');
+
+

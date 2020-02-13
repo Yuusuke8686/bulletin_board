@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Model\Thread;
 use Illuminate\Http\Request;
 use App\Model\Admin;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -81,11 +82,12 @@ class UserController extends Controller
     }
 
     /**
-    * ユーザーログイン
-    * @param Request $request
-    * @return View
-    */
-    public function loginUser(Request $request)
+     * ユーザーログイン
+     * @param Request $request
+     * @param Thread $thread
+     * @return View
+     */
+    public function loginUser(Request $request, Thread $thread)
     {
         // フォームからログインに使用するデータを取得
          $auth_info = [
@@ -94,8 +96,11 @@ class UserController extends Controller
         ];
 
         if (Auth::attempt($auth_info)){
-            // 認証成功の場合はスレッド一覧に遷移する
-            return view('app.thread.index');
+            // threadテーブルからデータを取得
+            $threads = $thread->all();
+
+            // スレッド一覧画面にデータを持っていく
+            return view('app.thread.index', compact('threads'));
         }
 
         return view('app.user.top');
