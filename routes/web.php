@@ -32,4 +32,7 @@ Route::get('/user/delete/confirm', 'UserController@showConfirmDeleteUser');
 
 Route::get('/user/delete', 'UserController@deleteUser');
 
+// スレッド一覧画面
+Route::get('/thread/index', 'ThreadController@indexThread');
+
 Auth::routes();
