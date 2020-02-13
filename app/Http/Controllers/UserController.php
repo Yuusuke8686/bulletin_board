@@ -74,7 +74,11 @@ class UserController extends Controller
 
         // Adminテーブルに保存する
         if ($admin->save()) {
-            return view('app.thread.index');
+            // threadテーブルからデータを取得
+            $threads = $thread->all();
+
+            // スレッド一覧画面にデータを持っていく
+            return view('app.thread.index', compact('threads'));
         }
 
         return view('app.user.create');

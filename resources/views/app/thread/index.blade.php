@@ -10,7 +10,7 @@
     <h2>スレッド一覧ページ</h2>
 {{--@if(isset($threads))--}}
 @foreach($threads as $thread)
-    @if($thread->isDelete == 0)
+    @if(!$thread->trashed())
     <ul>
         <li>{{$thread->id}}</li>
         <li>

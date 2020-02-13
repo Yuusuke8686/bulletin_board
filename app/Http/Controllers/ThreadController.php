@@ -36,10 +36,12 @@ class ThreadController extends Controller
 
         // TODO バリデーション
 
-        $thread->fill(['thread_name' => $thread_name, 'quantity' => 0, 'isDelete' => false]);
+        $thread->fill(['thread_name' => $thread_name, 'quantity' => 0]);
 
         if ($thread->save()) {
-            return view('app.thread.index');
+            // threadテーブルからデータを取得
+            $threads = $thread->all();
+            return view('app.thread.index', compact('threads'));
         }
         else {
             return view('app.thread.create');
@@ -81,13 +83,10 @@ class ThreadController extends Controller
         // 削除処理後に表示されるメッセージ
         $thread_index_message = 'スレッドの削除に失敗しました。';
 
-        // Threadsテーブルの該当レコードのisDeleteフラグをtrueに更新する
-        $is_delete = ['isDelete' => 1];
-        if ($thread->find($thread_id)->update($is_delete)) {
+        if ($thread->find($thread_id)->delete()) {
            $thread_index_message = 'スレッドの削除に成功しました';
             // threadテーブルからデータを取得
             $threads = $thread->all();
-
         }
 
         return view('app.thread.index', compact('threads'))->with('thread_index_message', $thread_index_message);
