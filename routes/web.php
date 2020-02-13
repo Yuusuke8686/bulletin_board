@@ -11,10 +11,25 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// トップ画面 //
+Route::get('/top', 'UserController@showTop');
+
+// ログイン //
+Route::post('/login', 'UserController@loginUser');
+
+// ユーザー新規登録画面 //
+Route::get('/user/create', 'UserController@showRegistForm');
+
+Route::post('/user/confirm', 'UserController@confirmRegistUser');
+
+Route::post('/user/complete', 'UserController@registUser');
+
+// ログアウト //
+Route::get('/logout', 'UserController@logoutUser');
+
+// ユーザー削除確認 //
+Route::get('/user/delete/confirm', 'UserController@showConfirmDeleteUser');
+
+Route::get('/user/delete', 'UserController@deleteUser');
 
 Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
