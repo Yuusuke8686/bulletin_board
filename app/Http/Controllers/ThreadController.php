@@ -58,7 +58,7 @@ class ThreadController extends Controller
         $thread_data = Thread::all();
 
         // スレッド一覧画面にデータを持っていく
-        return view('app.thread.index', ['thread_data' => $thread_data]);
+        return view(route('thread.index'), ['thread_data' => $thread_data]);
     }
 
     /**
@@ -68,24 +68,24 @@ class ThreadController extends Controller
      */
     public function showThreadDeleteConfirm(int $thread_id)
     {
-        return view('app.thread.deleteConfirm', ['thread_id' => $thread_id]);
+        return view(route('thread.delete.Confirm', ['thread_id' => $thread_id]));
     }
 
     /**
      * スレッド削除機能
      * @param int $thread_id
-     * @param Request $request
      * @param Thread $thread
      * @return View
      */
-    public function deleteThread(Request $request, Thread $thread, int $thread_id)
+    public function deleteThread(Thread $thread, int $thread_id)
     {
+        // 削除処理後に表示されるメッセージ
+        $thread_index_message = 'スレッドの削除に失敗しました。';
         // 対象のスレッドを削除する
-        if (Thread::where('id', $thread_id)->delete()){
-            $request->session()->flash('thread_index_flash', 'スレッドを削除しました');
+        if ($thread->destroy($thread_id)){
+            $thread_index_message = 'スレッドの削除に成功しました。';
         }
 
-        $request->session()->flash('thread_index_flash', 'スレッドの削除に失敗しました');
-        return view('app.thread.index');
+        return view(route('thread.index'))->with('thread_index_message', $thread_index_message);
     }
 }

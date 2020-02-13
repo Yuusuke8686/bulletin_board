@@ -10,7 +10,7 @@
 <body>
 <h2>スレッド削除</h2>
 <button>
-    <a href="/thread/delete">削除</a>
+    <a href="{{route('thread.delete')}}">削除</a>
 </button>
 </body>
 </html>

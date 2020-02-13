@@ -41,8 +41,8 @@ Route::get('/thread/create', 'ThreadController@showCreateThread');
 Route::post('/thread/create', 'ThreadController@createThread');
 
 // スレッド削除
-Route::get('/thread/delete/confirm/{thread_id}', 'ThreadController@showThreadDeleteConfirm');
+Route::get('/thread/delete/confirm/{thread_id}', 'ThreadController@showThreadDeleteConfirm')->name('thread.delete.confirm');
 
-Route::get('thread/delete/{thread_id}', 'ThreadController@deleteThread');
+Route::get('thread/delete/{thread_id}', 'ThreadController@deleteThread')->name('thread.delete');
 
 Auth::routes();

@@ -10,7 +10,7 @@
 <body>
 <h2>削除完了でーす</h2>
 <button>
-    <a href="/thread/index">掲示板に戻る</a>
+    <a href="{{route('thread.index')}}">掲示板に戻る</a>
 </button>
 </body>
 </html>
