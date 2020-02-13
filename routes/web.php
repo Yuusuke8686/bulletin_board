@@ -36,8 +36,8 @@ Route::get('/user/delete', 'UserController@deleteUser');
 Route::get('/thread/index', 'ThreadController@indexThread');
 
 // スレッド作成
-Route::get('/thread/create', 'ThreadController@showCreateThread');
+Route::get('/thread/create', 'ThreadController@showCreateThread')->name('thread.create.show');
 
-Route::post('/thread/create', 'ThreadController@createThread');
+Route::post('/thread/create', 'ThreadController@createThread')->name('thread.create.send');
 
 Auth::routes();
