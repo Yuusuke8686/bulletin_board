@@ -1,32 +1,44 @@
 @extends('layouts.app')
 
 @section('content')
-<h2>スレッド一覧ページ</h2>
+<div class="ml-5">
+    <h2>スレッド一覧</h2>
+</div>
+<div class="container">
+    <div class="mx-3">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>スレッド名</th>
+                <th>作成日時</th>
+                <th>更新日時</th>
+            </tr>
+            </thead>
+            <tbody>
 @foreach($threads as $thread)
-    @if(!$thread->trashed())
-    <ul>
-        <li>{{$thread->id}}</li>
-        <li>
-            <a href={{ route('thread.comment', ['thread_id' => $thread->id]) }}>
-                {{$thread->thread_name}}
-            </a>
-        </li>
-        <li>{{$thread->quantity}}</li>
-        <li>{{$thread->created_at}}</li>
-        <li>{{$thread->update_at}}</li>
-        <li>
-            <button>
-                <a href="{{route('thread.delete.confirm', ['thread_id' => $thread->id])}}">削除</a>
-            </button>
-        </li>
-    </ul>
-    @endif
+@if(!$thread->trashed())
+            <tr>
+                <td>{{$thread->id}}</td>
+                <td><a href={{ route('thread.comment.create.show', ['thread_id' => $thread->id]) }}>{{$thread->thread_name}}({{$thread->quantity}})</a></td>
+                <td>{{$thread->created_at}}</td>
+                <td>{{$thread->update_at}}</td>
+            </tr>
+@endif
 @endforeach
-{{--@else--}}
-    <div>スレッドがありません</div>
-{{--@endif--}}
-    <button>
-        <a href="{{route('thread.create.show')}}">スレッド作成</a>
-    </button>
+            </tbody>
+        </table>
+        {{$threads->links()}}
+    @if(!isset($threads))
+        <div>スレッドがありません</div>
+    @endif
+        <div>
+            <p class="lead">スレッド作成はこちらから</p>
+        </div>
+        <div class="my-2">
+            <a href="{{ route('thread.create.show')}}" class="btn btn-outline-primary">スレッド作成</a>
+        </div>
+    </div>
+</div>
 @endsection
 
