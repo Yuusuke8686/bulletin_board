@@ -7,18 +7,13 @@
     <ul>
         <li>{{$thread->id}}</li>
         <li>
-            <a href={{ route('thread.comment', ['thread_id' => $thread->id]) }}>
+            <a href={{ route('thread.comment.create.show', ['thread_id' => $thread->id]) }}>
                 {{$thread->thread_name}}
             </a>
         </li>
         <li>{{$thread->quantity}}</li>
         <li>{{$thread->created_at}}</li>
         <li>{{$thread->update_at}}</li>
-        <li>
-            <button>
-                <a href="{{route('thread.delete.confirm', ['thread_id' => $thread->id])}}">削除</a>
-            </button>
-        </li>
     </ul>
     @endif
 @endforeach
