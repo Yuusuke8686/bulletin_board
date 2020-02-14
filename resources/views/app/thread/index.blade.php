@@ -1,12 +1,3 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>スレッド一覧</title>
-</head>
-<body>
 @extends('layouts.app')
 
 @section('content')
@@ -37,6 +28,5 @@
     <button>
         <a href="{{route('thread.create.show')}}">スレッド作成</a>
     </button>
-</body>
 @endsection
-</html>
+

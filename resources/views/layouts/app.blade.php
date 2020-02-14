@@ -24,7 +24,7 @@
         <nav class="navbar navbar-expand-md navbar-dark bg-dark shadow-sm">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/top') }}">
-                    {{ config('app.name', '掲示板') }}
+                    {{__('掲示板')}}
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
@@ -41,11 +41,11 @@
                         <!-- Authentication Links -->
                         @guest
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('login.show') }}">{{ __('Login') }}</a>
+                                <a class="nav-link" href="{{ route('login.show') }}">{{ __('ログイン') }}</a>
                             </li>
                             @if (Route::has('user.create'))
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('user.create') }}">{{ __('Register') }}</a>
+                                    <a class="nav-link" href="{{ route('user.create') }}">{{ __('ユーザー登録') }}</a>
                                 </li>
                             @endif
                         @else
