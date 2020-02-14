@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ThreadValiRequest;
 use Illuminate\Http\Request;
 use App\Model\Thread;
+use Illuminate\Support\Facades\Auth;
 
 class ThreadController extends Controller
 {
@@ -24,23 +26,22 @@ class ThreadController extends Controller
 
     /**
      * スレッド作成機能
-     * @param Request $request
+     * @param ThreadValiRequest $request
      * @return View
      */
-    public function createThread(Request $request)
+    public function createThread(ThreadValiRequest $request)
     {
         $thread = new Thread();
 
         // フォームからタイトルを取得
         $thread_name = $request->thread_name;
 
-        // TODO バリデーション
 
-        $thread->fill(['thread_name' => $thread_name, 'quantity' => 0]);
+        $thread->fill(['thread_name' => $thread_name, 'quantity' => 0, 'admin_id' => Auth::id()]);
 
         if ($thread->save()) {
             // threadテーブルからデータを取得
-            $threads = $thread->all();
+            $threads = $thread->paginate(10);
             return view('app.thread.index', compact('threads'));
         }
         else {
@@ -56,7 +57,7 @@ class ThreadController extends Controller
     public function indexThread(Thread $thread)
     {
         // threadテーブルからデータを取得
-        $threads = $thread->all();
+        $threads = $thread->paginate(10);
 
         // スレッド一覧画面にデータを持っていく
         return view('app.thread.index', compact('threads'));
@@ -86,7 +87,7 @@ class ThreadController extends Controller
         if ($thread->find($thread_id)->delete()) {
            $thread_index_message = 'スレッドの削除に成功しました';
             // threadテーブルからデータを取得
-            $threads = $thread->all();
+            $threads = $thread->paginate(10);
         }
 
         return view('app.thread.index', compact('threads'))->with('thread_index_message', $thread_index_message);

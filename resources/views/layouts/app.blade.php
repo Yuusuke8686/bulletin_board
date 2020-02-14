@@ -58,7 +58,14 @@
                                     <a class="dropdown-item" href="{{ route('logout') }}">
                                         {{ __('ログアウト') }}
                                     </a>
+                                    <a class="dropdown-item" href="{{ route('thread.Index') }}">
+                                        {{ __('スレッド一覧') }}
+                                    </a>
+                                    <a class="dropdown-item" href="{{ route('user.delete.confirm') }}">
+                                        {{ __('退会') }}
+                                    </a>
                                 </div>
+
                             </li>
                         @endguest
                     </ul>

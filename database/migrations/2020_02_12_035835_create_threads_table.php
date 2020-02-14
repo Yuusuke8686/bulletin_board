@@ -15,6 +15,7 @@ class CreateThreadsTable extends Migration
     {
         Schema::create('threads', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->unsignedInteger('admin_id');
             $table->string('thread_name');
             $table->unsignedInteger('quantity');
             $table->softDeletes();

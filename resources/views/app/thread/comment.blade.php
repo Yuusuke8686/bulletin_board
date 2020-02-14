@@ -26,6 +26,7 @@
 @if($threads->quantity < 100)
     <form action="{{route('thread.comment.create.send', ['thread_id' => $threads->id])}}" method="post">
         @csrf
+        <div class="text-danger">{{$errors->first('body')}}</div>
         <input type="text" name="body">
         <div>300文字以内で投稿してください</div>
         <button type="submit">投稿</button>
@@ -35,7 +36,7 @@
 @endif
 @if(Auth::id() === $threads->admin_id)
 <button>
-    <a href="/thread/delete/confirm/{$thread_id}">スレッド削除</a>
+    <a href="{{route("thread.delete.confirm", ['thread_id' => $threads->id])}}">スレッド削除</a>
 </button>
 @endif
 @endsection
