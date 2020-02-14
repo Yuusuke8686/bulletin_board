@@ -6,5 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Comment extends Model
 {
-    //
+    protected $guarded = [
+        'id'
+    ];
+
+    // リレーションはコメントCRUD実装時に一緒に実装
+    public function thread()
+    {
+        return $this->hasOne(Thread::class);
+    }
 }
