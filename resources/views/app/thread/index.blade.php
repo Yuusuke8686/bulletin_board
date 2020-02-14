@@ -4,19 +4,6 @@
 <div class="ml-5">
     <h2>スレッド一覧</h2>
 </div>
-{{--@foreach($threads as $thread)--}}
-{{--    @if(!$thread->trashed())--}}
-{{--    <ul>--}}
-{{--        <li>{{$thread->id}}</li>--}}
-{{--        <li>--}}
-{{--            <a href={{ route('thread.comment.create.show', ['thread_id' => $thread->id]) }}>--}}
-{{--                {{$thread->thread_name}}--}}
-{{--            </a>--}}
-{{--        </li>--}}
-{{--        <li>{{$thread->quantity}}</li>--}}
-{{--        <li>{{$thread->created_at}}</li>--}}
-{{--        <li>{{$thread->update_at}}</li>--}}
-{{--    </ul>--}}
 <div class="container">
     <div class="mx-3">
         <table class="table table-bordered">
