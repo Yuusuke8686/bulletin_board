@@ -23,10 +23,10 @@ class ThreadRepository implements ThreadRepositoryInterface
 
     /**
      * 作成機能
-     * @param Request $request
+     * @param int $thread_name
      * @param int $admin_id
      */
-    public function create(Request $request, int $admin_id)
+    public function create(int $thread_name, int $admin_id)
     {
         $thread->fill([
             'thread_name' => $request->thread_name,

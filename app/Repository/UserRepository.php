@@ -13,14 +13,14 @@ class UserRepository implements UserRepositoryInterface
 
     /**
      * 新規登録
-     * 
+     * @param array $userData
      */
-    public function create()
+    public function create(array $userData)
     {
         $admin = fill([
-            'login_id' => $request->login_id,
-            'password' => $request->password,
-            'nickname' => $request->nickname
+            'login_id' => $userData->login_id,
+            'password' => $userData->password,
+            'nickname' => $userData->nickname
         ]);
 
         // adminテーブルに保存
@@ -34,7 +34,7 @@ class UserRepository implements UserRepositoryInterface
      * 削除機能
      * @param int $userId
      */
-    public function deleteUser(int $userId)
+    public function delete(int $userId)
     {
         // 削除対象のユーザーを取得
         $deleteAdmin = $admin->where('id', $userId)->first();
