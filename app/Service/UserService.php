@@ -3,6 +3,7 @@
 namespace App\Http\Service;
 
 use App\Http\Requests\UserValiRequest;
+use App\Http\Requests\LoginUserValiRequest;
 use App\Http\Repository\UserRepositoryInterface;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
@@ -48,9 +49,9 @@ class UserService
 
     /**
      * ユーザーログイン機能
-     * @param UserValiRequest $request
+     * @param LoginUserValiRequest $request
      */
-    public function login(UserValiRequest $request)
+    public function login(LoginUserValiRequest $request)
     {
         $auth_info = [
             'login_id' => $request->login_id,

@@ -4,12 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginUserValiRequest;
 use App\Http\Requests\UserValiRequest;
-use App\Model\Thread;
 use Illuminate\Http\Request;
-use App\Model\Admin;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
 
 /**
  * TODO とりあえずcontrollerにベタガキ。余裕があればサービス層とレポジトリ層に分ける。
@@ -18,6 +14,15 @@ use Illuminate\Support\Facades\Auth;
 class UserController extends Controller
 {
     use AuthenticatesUsers;
+
+    protected $userService;
+    protected $threadservice;
+
+    public function __construct(UserService $userService, ThreadService $threadservice)
+    {
+        $this->userService = $userService;
+        $this->threadService = $threadservice;
+    }
 
     /**
     * TOPページ表示
@@ -41,20 +46,15 @@ class UserController extends Controller
 
     /**
      * ユーザー新規登録確認
-     * @param UserValiRequest $request
+     * @param Request $request
      * @return View
      */
-    public function confirmRegistUser(UserValiRequest $request)
+    public function confirmRegistUser(Request $request)
     {
-        // フォームのデータを取得
-        $login_id = $request->login_id;
-        $password = $request->password;
-        $nickname = $request->nickname;
+        $userConfirmData = $this->userService->createConfirmUser($request);
 
-
-        // 確認画面に返す //
-        return view('app.user.registConfirm', compact('login_id', 'password', 'nickname'));
-
+        // 確認画面
+        return view('app.user.registConfirm', compact('userConfirmData'));
     }
 
     /**
@@ -65,59 +65,32 @@ class UserController extends Controller
      */
     public function registUser(UserValiRequest $request, Thread $thread)
     {
-        $admin = new Admin;
+        if($this->userService->createUser($request)){
+            $threads = $this->threadService->indexThread();
 
-        // フォームのデータを取得
-        $login_id = $request->login_id;
-        $password = $request->password;
-        $nickname = $request->nickname;
-
-        $admin->fill(['login_id' => $login_id, 'password' => Hash::make($password), 'nickname' => $nickname]);
-
-        // Adminテーブルに保存する
-        if ($admin->save()) {
-            $auth_info = [
-                'login_id' => $login_id,
-                'password' => $password
-            ];
-            // ログインする //
-            if(Auth::attempt($auth_info)){
-                // threadテーブルからデータを取得
-                $threads = $thread->paginate(10);
-
-                // スレッド一覧画面にデータを持っていく
-                return view('app.thread.index', compact('threads'));
-            }
+            // スレッド一覧
+            return view('app.thread.index', compact('threads'));
         }
-
-        return view('app.user.create');
-
+        $errorMessage = 'ユーザー登録に失敗しました';
+        return view('app.user.create')->with('errorMessage', $errorMessage);
     }
 
     /**
      * ユーザーログイン
      * @param LoginUserValiRequest $request
-     * @param Thread $thread
      * @return View
      */
-    public function loginUser(LoginUserValiRequest $request, Thread $thread)
+    public function loginUser(LoginUserValiRequest $request)
     {
-        // フォームからログインに使用するデータを取得
-         $auth_info = [
-             'login_id' => $request->login_id,
-             'password' => $request->password
-        ];
-
-        if (Auth::attempt($auth_info)){
-            // threadテーブルからデータを取得
-            $threads = $thread->paginate(10);
-
-            // スレッド一覧画面にデータを持っていく
+        if($this->userService->login()){
+            $threads = $this->threadService->indexThread();
+            
+            // スレッド一覧
             return view('app.thread.index', compact('threads'));
         }
 
-        return view('app.user.top');
-
+        $errorMessage = 'ログインに失敗しました';
+        return view('app.user.top')->with('errorMessage', $errorMessage);
     }
 
     /**
@@ -127,9 +100,12 @@ class UserController extends Controller
     */
     public function logoutUser()
     {
-        Auth::logout();
+        if(!$this->userService->logout()){
+            $errorMessage = 'ログアウトに失敗しました';
+        }
+        $errorMessage = 'ログアウトに失敗しました';
 
-        return view('app.user.top');
+        return view('app.user.top')->with('errorMessage', $errorMessage);
     }
 
     /**
@@ -149,21 +125,11 @@ class UserController extends Controller
     */
     public function deleteUser(Admin $admin)
     {
-        // 現在ログイン中のユーザー情報を取得 //
-        $userid = Auth::id();
-
-        //ログアウトしてセッション・メモリからユーザー情報削除
-        Auth::logout();
-
-        $admin = Admin::where('id', $userid)->first();
-
-        if ($admin->id === $userid) {
-            // Adminテーブルから該当のユーザーを削除
-            if ($admin->destroy($userid)) {
-                return redirect()->route('top');
-            }
+        if($this->userService->deleteUser()){
+            return view('app.user.top');
         }
 
+        session()>flash('errorMessage', 'ユーザーの削除に失敗しました。')
         return redirect()->back();
     }
 }
