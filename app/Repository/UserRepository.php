@@ -1,26 +1,23 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Repository;
 
 use App\Model\Admin;
 
 class UserRepository implements UserRepositoryInterface
 {
-    public function __construct(Admin $admin)
-    {
-        $this->admin = $admin;
-    }
-
     /**
      * 新規登録
      * @param array $userData
      */
     public function create(array $userData)
     {
-        $admin = fill([
-            'login_id' => $userData->login_id,
-            'password' => $userData->password,
-            'nickname' => $userData->nickname
+        $admin = new Admin();
+
+        $admin->fill([
+            'login_id' => $userData['login_id'],
+            'password' => $userData['password'],
+            'nickname' => $userData['nickname']
         ]);
 
         // adminテーブルに保存
@@ -36,6 +33,8 @@ class UserRepository implements UserRepositoryInterface
      */
     public function delete(int $userId)
     {
+        $admin = new Admin();
+
         // 削除対象のユーザーを取得
         $deleteAdmin = $admin->where('id', $userId)->first();
 

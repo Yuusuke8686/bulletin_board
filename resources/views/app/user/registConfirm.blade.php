@@ -2,6 +2,11 @@
 
 @section('content')
     <h2>登録確認</h2>
+@if(session('errorMessage'))
+    <div class="alert alert-success errorMessage">
+        {{session('errorMessage')}}
+    </div>
+@endif
     <div class="container">
         <div class="row justify-content-center">
             <div class="col mt-2 pt-2">
@@ -12,20 +17,20 @@
                             <form action="{{ route('user.complete')}}" method="post">
                                 @csrf
                                 <div class="form-group">
-                                    <laebel for="login_id">ログインID</laebel>
+                                    <label for="login_id">ログインID</label>
                                     <div class="text-danger">{{$errors->first('login_id')}}</div>
-                                    <input class="form-control" type="text" name="login_id" id="login_id" value={{$login_id}} readonly>
+                                    <input class="form-control" type="text" name="login_id" id="login_id" value={{$userConfirmData['login_id']}} readonly>
 
                                 </div>
                                 <div class="form-group">
                                     <label for="password">パスワード</label>
                                     <div class="text-danger">{{$errors->first('password')}}</div>
-                                    <input class="form-control" type="password" name="password" id="pass" value={{$password}} readonly >
+                                    <input class="form-control" type="password" name="password" id="pass" value={{$userConfirmData['password']}} readonly >
                                 </div>
                                 <div class="form-group">
                                     <label for="password">ニックネーム</label>
                                     <div class="text-danger">{{$errors->first('nickname')}}</div>
-                                    <input class="form-control" type="text" name="nickname" id="nickname" value={{$nickname}} readonly>
+                                    <input class="form-control" type="text" name="nickname" id="nickname" value={{$userConfirmData['nickname']}} readonly>
                                 </div>
                                 <button class="btn btn-outline-primary" type="submit">登録</button>
                             </form>

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Service;
+namespace App\Service;
 
 use App\Http\Requests\UserValiRequest;
 use App\Http\Requests\LoginUserValiRequest;
-use App\Http\Repository\UserRepositoryInterface;
+use App\Repository\UserRepositoryInterface;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 

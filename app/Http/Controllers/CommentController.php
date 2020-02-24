@@ -7,31 +7,32 @@ use Exception;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use App\Model\Thread;
-use App\Model\Comment;
-use App\Model\Admin;
 use Illuminate\View\View;
-use Illuminate\Support\Facades\Auth;
+use App\Service\ThreadService;
+use App\Service\CommentService;
 
 class CommentController extends Controller
 {
-    /**
-     * TODO paginateは一旦未実装。処理もコントローラに詰め込み。余裕があればサービス層とかに分ける。
-     */
+    protected $commenrService;
+    protected $threadService;
+
+    public function __construct(CommentService $commentService, ThreadService $threadService)
+    {
+        $this->commentService = $commentService;
+        $this->threadService = $threadService;
+    }
 
     /**
      * コメント一覧表示
      * @param $thread_id
-     * @param Comment $comment
      * @return Factory|View
      */
-    public function showCommentIndex($thread_id, Comment $comment)
+    public function showCommentIndex(int $thread_id)
     {
-        // URLからパラメータとして受け取った$thread_idを元にコメントを全件取得する //
-        $comments = $comment->where('thread_id', $thread_id)->get();
+        $comments = $this->commentService->indexComment($thread_id);
 
-        // 該当のThreadテーブルのデータを取得して渡す //
-        $threads = Thread::find($thread_id);
+        // 紐づいているスレッドを取得
+        $threads = $this->threadService->findThread($thread_id);
 
         return view('app.thread.comment', compact('comments', 'threads'));
 
@@ -40,46 +41,28 @@ class CommentController extends Controller
     /**
      * コメント投稿機能
      * @param CommentValiRequest $request
-     * @param Comment $comment
-     * @param Thread $thread
      * @param int $thread_id
      * @return Factory|RedirectResponse|View
      */
-    public function createComment(CommentValiRequest $request, Comment $comment, Thread $thread, int $thread_id)
+    public function createComment(CommentValiRequest $request, int $thread_id)
     {
-        // フォームからコメントを取得する //
-        $body = $request->body;
-
-        // 現在ログイン中のユーザーIDを取得する //
-        $admin_id =  Auth::id();
-
-        $comment->fill(['thread_id' => $thread_id, 'admin_id' => $admin_id, 'body' => $body]);
-
-        if($comment->save()){
-            // スレッド数を1増やす //
-            $thread->incrementQuantity($thread_id);
-
-            // 保存できたらコメント一覧画面に遷移する //
-            $comments = $comment->where('thread_id', $thread_id)->get();
-
-            $threads = Thread::find($thread_id);
-
-            return view('app.thread.comment', compact('comments', 'threads'));
+        if(!$this->commentService->createComment($request, $thread_id)){
+            session()->flash('errorMessage', 'コメントの投稿に失敗しました');
         }
+        $comments = $this->commentService->indexComment($thread_id);
+        $threads = $this->threadService->findThread($thread_id);
 
-        return view('app');
+        return view('app.thread.comment', compact('comments', 'threads'));
     }
 
     /**
      * コメント編集画面表示
-     * @param Comment $comment
      * @param int $comment_id
      * @return Factory|View
      */
-    public function showEditComment(Comment $comment, int $comment_id)
+    public function showEditComment(int $comment_id)
     {
-        // 該当コメントを取得する //
-        $comments = $comment->find($comment_id);
+        $comments = $this->commentService->findComment($comment_id);
 
         return view('app.thread.commentEdit', ['comments' => $comments]);
     }
@@ -87,74 +70,56 @@ class CommentController extends Controller
     /**
      * コメント編集機能
      * @param CommentValiRequest $request
-     * @param Comment $comment
      * @return Factory|View
      */
-    public function editComment(CommentValiRequest $request, Comment $comment)
+    public function editComment(CommentValiRequest $request)
     {
-        // フォームから編集されたコメント内容を取得する //
-        $body = $request->body;
-        $comment_id = $request->comment_id;
+        if(!$this->commentService->editComment($request)){
+            session()->flash('errorMessage', '正常に更新できませんでした');
+        }
+        // 紐づいているスレッドを取得する
+        $thread_id = $this->commentService->getThreadId($request);
+        $threads = $this->threadService->findThread($thread_id);
 
-        // コメントを更新する //
-       if($comment->where('id', $comment_id)->update(['body' => $body])) {
+        // スレッドに紐づいているコメントを全件取得
+        $comments = $this->commentService->indexComment($thread_id);
 
-           // $comment_idを元に$thread_idを取得する
-           $thread_id = $comment->where('id', $comment_id)->value('thread_id');
-
-           $comments = $comment->where('thread_id', $thread_id)->get();
-
-           $threads = Thread::find($thread_id);
-
-            // 更新正常に行われた場合 //
-           return view('app.thread.comment', compact('comments', 'threads'));
-       }
-
-       return redirect()->back();
+        return view('app.thread.comment', compact('comments', 'threads'));
     }
 
     /**
      * コメント削除確認画面表示
      * @param int $comment_id
-     * @param Comment $comment
      * @return Factory|View
      */
-    public function showCommentDeleteConfirm(int $comment_id, Comment $comment)
+    public function showCommentDeleteConfirm(int $comment_id)
     {
-        $comment = $comment->find($comment_id);
+        $comment = $this->commentService->findComment($comment_id);
 
         return view('app.thread.commentDelete', compact('comment'));
     }
 
     /**
      * コメント削除機能
-     * @param Request $request
+     * @param CommentValiRequest $request
      * @param Comment $comment
      * @param Thread $thread
      * @return Factory|View
      */
-    public function commentDelete(Request $request, Comment $comment, Thread $thread)
+    public function commentDelete(CommentValiRequest $request)
     {
-        // フォームから送信されたcomment_idを取得する
-        $comment_id = $request->comment_id;
+        // thread_idを取得する
+        $thread_id = $this->commentService->getThreadId($request);
 
-        // $comment_idを元に$thread_idを取得する
-        $thread_id = $comment->where('id', $comment_id)->value('thread_id');
-
-        if($comment->destroy($comment_id)){
-            // コメント数を1減らす //
-            $thread->decrementQuantity($thread_id);
-
-            $comments = $comment->where('thread_id', $thread_id)->get();
-
-            $threads = Thread::find($thread_id);
-
-            // 更新正常に行われた場合 //
-            return view('app.thread.comment', compact('comments', 'threads'));
+        // 削除
+        if($this->commentService->deleteComment($request)){
+            session()->flash('errorMessage', 'コメント削除に失敗しました');
         }
+        session()->flash('errorMessage', 'コメントを削除しました');
+        //スレッドとコメントを取得
+        $threads = $this->threadService->findThread($thread_id);
+        $comments = $this->commentService->indexComment($thread_id);
 
-        $comment = $comment->find($comment_id);
-        $commentDeleteMessage = '正常に削除できませんでした';
-        return view('app.thread.commentDelete', compact('comment'))->with('commentDeleteMessage', $commentDeleteMessage);
+        return view('app.thread.comment', compact('comments', 'threads'));
     }
 }

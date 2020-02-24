@@ -1,24 +1,19 @@
 <?php
 
-namespace App\Http\Repository;
+namespace App\Repository;
 
 use Illuminate\Http\Request;
 use App\Model\Comment;
 
 class CommentRepository implements CommentRepositoryInterface
 {
-    public function __construct(Comment $comment)
-    {
-        $this->comment = $comment;
-    }
-
-
     /**
      * 一覧表示
      * @param int $thread_id
      */
     public function index(int $thread_id)
     {
+        $comment = new Comment();
         // $thread_idをもとにコメントを全件取得する
         return $comment->where('thread_id', $thread_id)->get();
     }
@@ -29,10 +24,12 @@ class CommentRepository implements CommentRepositoryInterface
      */
     public function create(array $newCommentArray)
     {
+        $comment = new Comment();
+
         $comment->fill([
-            'thread_id' => $newCommentArray->thread_id,
-            'admin_id' => $newCommentArray->admin_id,
-            'body' => $newCommentArray->body
+            'thread_id' => $newCommentArray['thread_id'],
+            'admin_id' => $newCommentArray['admin_id'],
+            'body' => $newCommentArray['body']
         ]);
 
         // 保存する
@@ -48,12 +45,25 @@ class CommentRepository implements CommentRepositoryInterface
      */
     public function edit(array $editCommentArray)
     {
+        $comment = new Comment();
+
         // 更新する
-        if($comment->where('id', $editCommentArray->comment_id)->update(['body'=>$editCommentArray->body])){
+        if($comment->where('id', $editCommentArray['comment_id'])->update(['body'=>$editCommentArray['body']])){
             return true;
         }
         
         return false;
+    }
+
+    /**
+     * スレッドID取得
+     * @param int $comment_id
+     */
+    public function getThreadId(int $comment_id)
+    {
+        $comment = new Comment();
+
+        return $comment->where('id', $comment_id)->value('thread_id');
     }
 
     /**
@@ -62,6 +72,8 @@ class CommentRepository implements CommentRepositoryInterface
      */
     public function find(int $comment_id)
     {
+        $comment = new Comment();
+
         return $comment->find($comment_id);
     }
 
@@ -71,6 +83,8 @@ class CommentRepository implements CommentRepositoryInterface
      */
     public function destroy(int $comment_id)
     {
+        $comment = new Comment();
+
         if($comment->destroy($comment_id)){
             return true;
         }

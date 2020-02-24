@@ -174,6 +174,12 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        App\Providers\UserServiceProvider::class,
+        App\Providers\UserRepositoryServiceProvider::class,
+        App\Providers\ThreadServiceProvider::class,
+        App\Providers\ThreadRepositoryServiceProvider::class,
+        App\Providers\CommentServiceProvider::class,
+        App\Providers\CommentRepositoryServiceProvider::class,
 
     ],
 

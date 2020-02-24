@@ -4,14 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ThreadValiRequest;
 use Illuminate\Http\Request;
-use App\Model\Thread;
-use Illuminate\Support\Facades\Auth;
+use App\Service\ThreadService;
 
 class ThreadController extends Controller
 {
-    /**
-     * TODO とりあえずControllerにベタ書き、時間があればサービス層作る
-     */
+    protected $threadService;
+
+    public function __construct(ThreadService $threadService)
+    {
+        $this->threadService = $threadService;
+    }
 
 
     /**
@@ -31,22 +33,14 @@ class ThreadController extends Controller
      */
     public function createThread(ThreadValiRequest $request)
     {
-        $thread = new Thread();
+        if($this->threadService->createThread($request)){
+            $threads = $this->threadService->indexThread();
 
-        // フォームからタイトルを取得
-        $thread_name = $request->thread_name;
-
-
-        $thread->fill(['thread_name' => $thread_name, 'quantity' => 0, 'admin_id' => Auth::id()]);
-
-        if ($thread->save()) {
-            // threadテーブルからデータを取得
-            $threads = $thread->paginate(10);
             return view('app.thread.index', compact('threads'));
         }
-        else {
-            return view('app.thread.create');
-        }
+
+        $errorMessage = 'スレッド作成に失敗しました';
+        return view('app.thread.create');
     }
 
     /**
@@ -54,10 +48,9 @@ class ThreadController extends Controller
      * @param Thread $thread
      * @return View
      */
-    public function indexThread(Thread $thread)
+    public function indexThread()
     {
-        // threadテーブルからデータを取得
-        $threads = $thread->paginate(10);
+        $threads = $this->threadService->indexThread();
 
         // スレッド一覧画面にデータを持っていく
         return view('app.thread.index', compact('threads'));
@@ -81,16 +74,11 @@ class ThreadController extends Controller
      */
     public function deleteThread(Thread $thread, int $thread_id)
     {
-        // 削除処理後に表示されるメッセージ
-        $thread_index_message = 'スレッドの削除に失敗しました。';
-
-        if ($thread->find($thread_id)->delete()) {
-           $thread_index_message = 'スレッドの削除に成功しました';
-            // threadテーブルからデータを取得
-            $threads = $thread->paginate(10);
+        if(!$this->threadService->deleteThread()){
+            session()->flash('errorMessage', 'スレッドの削除に失敗しました');
         }
+        $threads = $this->threadService->indexThread();
 
-        return view('app.thread.index', compact('threads'))->with('thread_index_message', $thread_index_message);
-
+        return view('app.thread.index', compact('threads'));
     }
 }

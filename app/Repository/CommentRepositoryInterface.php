@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Repository;
+namespace App\Repository;
 
 use Illuminate\Http\Request;
 use App\Model\Comment;
@@ -11,14 +11,14 @@ interface CommentRepositoryInterface
     public function index(int $thread_id);
 
     // 投稿機能
-    public function create(Request $request, int $thread_id, int $admin_id);
+    public function create(array $newCommentArray);
 
     // 編集機能
-    public function edit(Request $request);
+    public function edit(array $editCommentArray);
 
     // 一件取得
     public function find(int $comment_id);
 
     // 削除
-    public function destroy(Request $request);
+    public function destroy(int $comment_id);
 }

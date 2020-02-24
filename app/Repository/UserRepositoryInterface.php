@@ -1,18 +1,15 @@
 <?php
 
-namespace App\Http\Repository;
+namespace App\Repository;
 
-use Illuminate\Http\Request;
-use App\Model\User;
+use App\Model\Admin;
 
 interface UserRepositoryInterface
 {
-    // 一覧表示
-    public function index();
 
     // 作成機能
-    public function create();
+    public function create(array $userData);
 
     // 削除
-    public function destroy(int $userId);
+    public function delete(int $userId);
 }

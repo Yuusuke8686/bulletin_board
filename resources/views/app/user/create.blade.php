@@ -2,6 +2,11 @@
 
 @section('content')
     <h2>ユーザー登録</h2>
+@if(session('errorMessage'))
+    <div class="alert alert-success errorMessage">
+        {{session('errorMessage')}}
+    </div>
+@endif
     <div class="container">
         <div class="row justify-content-center">
             <div class="col mt-2 pt-2">
@@ -12,9 +17,9 @@
                             <form action="{{ route('user.confirm') }}" method="post">
                                 @csrf
                                 <div class="form-group">
-                                    <laebel for="login_id">ログインID</laebel>
+                                    <label for="login_id">ログインID</label>
                                     <div class="text-danger">{{$errors->first('login_id')}}</div>
-                                    <input class="form-control" type="text" name="login_id" id="mail" placeholder="入力してください">
+                                    <input class="form-control" type="text" name="login_id" id="login_id" placeholder="入力してください">
 
                                 </div>
                                 <div class="form-group">
@@ -25,7 +30,7 @@
                                 <div class="form-group">
                                     <label for="password">ニックネーム</label>
                                     <div class="text-danger">{{$errors->first('nickname')}}</div>
-                                    <input class="form-control" type="text" name="nickname" id="pass" placeholder="入力してください">
+                                    <input class="form-control" type="text" name="nickname" id="nickname" placeholder="入力してください">
                                 </div>
                                 <button class="btn btn-outline-primary" type="submit">登録</button>
                             </form>

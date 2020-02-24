@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Repository;
+namespace App\Repository;
 
 use Illuminate\Http\Request;
 use App\Model\Thread;
@@ -11,8 +11,11 @@ interface ThreadRepositoryInterface
     public function index();
 
     // 作成機能
-    public function create(Request $request, int $admin_id);
+    public function create(string $thread_name, int $admin_id);
 
     // 削除
-    public function destroy(int $thread_id);
+    public function delete(int $thread_id);
+
+    //一件取得
+    public function find(int $thread_id);
 }

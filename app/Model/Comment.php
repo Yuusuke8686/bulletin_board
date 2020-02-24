@@ -10,9 +10,15 @@ class Comment extends Model
         'id'
     ];
 
-    // リレーションはコメントCRUD実装時に一緒に実装
     public function admin()
     {
+        // adminとは多対1
         return $this->belongsTo(Admin::class);
+    }
+
+    public function thread()
+    {
+        // threadとは多対1
+        return $this->belongsTo(Thread::class);
     }
 }

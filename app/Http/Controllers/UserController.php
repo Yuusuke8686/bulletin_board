@@ -6,10 +6,8 @@ use App\Http\Requests\LoginUserValiRequest;
 use App\Http\Requests\UserValiRequest;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-
-/**
- * TODO とりあえずcontrollerにベタガキ。余裕があればサービス層とレポジトリ層に分ける。
- */
+use App\Service\UserService;
+use App\Service\ThreadService;
 
 class UserController extends Controller
 {
@@ -46,10 +44,10 @@ class UserController extends Controller
 
     /**
      * ユーザー新規登録確認
-     * @param Request $request
+     * @param UserValiRequest $request
      * @return View
      */
-    public function confirmRegistUser(Request $request)
+    public function confirmRegistUser(UserValiRequest $request)
     {
         $userConfirmData = $this->userService->createConfirmUser($request);
 
@@ -63,7 +61,7 @@ class UserController extends Controller
      * @param Thread $thread
      * @return View
      */
-    public function registUser(UserValiRequest $request, Thread $thread)
+    public function registUser(UserValiRequest $request)
     {
         if($this->userService->createUser($request)){
             $threads = $this->threadService->indexThread();
@@ -82,7 +80,7 @@ class UserController extends Controller
      */
     public function loginUser(LoginUserValiRequest $request)
     {
-        if($this->userService->login()){
+        if($this->userService->login($request)){
             $threads = $this->threadService->indexThread();
             
             // スレッド一覧
@@ -129,7 +127,7 @@ class UserController extends Controller
             return view('app.user.top');
         }
 
-        session()>flash('errorMessage', 'ユーザーの削除に失敗しました。')
+        session()>flash('errorMessage', 'ユーザーの削除に失敗しました');
         return redirect()->back();
     }
 }

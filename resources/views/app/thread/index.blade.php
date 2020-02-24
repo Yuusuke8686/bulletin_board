@@ -4,10 +4,15 @@
 <div class="ml-5">
     <h2>スレッド一覧</h2>
 </div>
+@if(session('errorMessage'))
+    <div class="alert alert-success errorMessage">
+        {{session('errorMessage')}}
+    </div>
+@endif
 <div class="container">
     <div class="mx-3">
         <table class="table table-bordered">
-            <thead>
+            <thead class="thead-lignt">
             <tr>
                 <th>ID</th>
                 <th>スレッド名</th>
@@ -20,7 +25,7 @@
 @if(!$thread->trashed())
             <tr>
                 <td>{{$thread->id}}</td>
-                <td><a href={{ route('thread.comment.create.show', ['thread_id' => $thread->id]) }}>{{$thread->thread_name}}({{$thread->quantity}})</a></td>
+                <td><a href={{ route('thread.comment', ['thread_id' => $thread->id]) }}>{{$thread->thread_name}}({{$thread->comments()->count()}})</a></td>
                 <td>{{$thread->created_at}}</td>
                 <td>{{$thread->update_at}}</td>
             </tr>

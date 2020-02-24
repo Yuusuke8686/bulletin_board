@@ -2,6 +2,11 @@
 
 @section('content')
 <h2>スレッド作成</h2>
+@if(session('errorMessage'))
+    <div class="alert alert-success errorMessage">
+        {{session('errorMessage')}}
+    </div>
+@endif
 <div class="container">
     <div class="row justify-content-center">
         <div class="col mt-2 pt-2">
@@ -12,8 +17,8 @@
                         <form action="/thread/create" method="post">
                             @csrf
                             <div class="form-group">
-                                <laebel for="login_id">スレッド名</laebel>
-                                <div class="text-danger">{{$errors->first('login_id')}}</div>
+                                <label for="thread_name">スレッド名</label>
+                                <div class="text-danger">{{$errors->first('thread_name')}}</div>
                                 <input class="form-control" type="text" name="thread_name"  placeholder="入力してください">
                             </div>
                             <button class="btn btn-outline-primary" type="submit">作成</button>

@@ -5,6 +5,11 @@
 <div class="ml-3">
     <h3>掲示板です！！！！！</h3>
 </div>
+@if(session('errorMessage'))
+    <div class="alert alert-success errorMessage">
+        {{session('errorMessage')}}
+    </div>
+@endif
 <div class="container">
     <div class="row justify-content-center">
         <div class="col mt-2 pt-2">
@@ -15,7 +20,7 @@
                         <form action="{{ route('login.send')}}" method="post">
                             @csrf
                             <div class="form-group">
-                                <laebel for="login_id">ログインID</laebel>
+                                <label for="login_id">ログインID</label>
                                 <div class="text-danger">{{$errors->first('login_id')}}</div>
                                 <input class="form-control" type="text" name="login_id" id="mail" placeholder="入力してください">
 

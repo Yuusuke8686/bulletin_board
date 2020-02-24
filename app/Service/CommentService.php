@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Service;
+namespace App\Service;
 
 use App\Http\Requests\CommentValiRequest;
-use App\Http\Repository\CommentRepositoryInterface;
-use App\Http\Repository\ThreadRepositoryInterface;
+use App\Repository\CommentRepositoryInterface;
+use App\Repository\ThreadRepositoryInterface;
+use Illuminate\Support\Facades\Auth;
 
 class CommentService
 {
@@ -17,9 +18,9 @@ class CommentService
 
     /**
      * コメント一覧表示
-     * 
+     * @param int $thread_id
      */
-    public function indexComment()
+    public function indexComment(int $thread_id)
     {
         // コメントを全件取得する
         return $this->commentRepository->index($thread_id);
@@ -38,7 +39,7 @@ class CommentService
             'body' => $request->body
         ];
 
-        return $this->commentRepository->create($commentArray);
+        return $this->commentRepository->create($newCommentArray);
     }
 
     /**
@@ -56,19 +57,29 @@ class CommentService
     }
 
     /**
+     * スレッドID取得
+     * @param Request $request
+     */
+    public function getThreadId(CommentValiRequest $request)
+    {
+        $comment_id = $request->comment_id;
+        return $this->commentRepository->getThreadId($comment_id);
+    }
+
+    /**
      * コメント一件取得
      * @param $comment_id
      */
     public function findComment(int $comment_id)
     {
-        return $comment->find($comment_id);
+        return $this->commentRepository->find($comment_id);
     }
 
     /**
      * コメント削除
      * @param Request $request
      */
-    public function deleteComment(Request $request)
+    public function deleteComment(CommentValiRequest $request)
     {
         $comment_id = $request->comment_id;
 
