@@ -34,7 +34,7 @@
             <div class="card my-3" style="20%">
                 <h5 class="card-header toggle-mark" id="search-header">投稿者:{{$comment->admin->nickname}}
                 @if ($comment->admin_id == Auth::id()) 
-                <a data-toggle="collapse" href="#edit-div-{{$comment->id}}" class="collapsed"></a>
+                    <a data-toggle="collapse" href="#edit-div-{{$comment->id}}" class="collapsed"></a>
                 @endif
                 </h5>
                 <div class="card-body">

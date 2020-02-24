@@ -66,6 +66,9 @@ class UserController extends Controller
         if($this->userService->createUser($request)){
             $threads = $this->threadService->indexThread();
 
+            // 登録後ログインする
+            $this->userService->login($request);
+
             // スレッド一覧
             return view('app.thread.index', compact('threads'));
         }
