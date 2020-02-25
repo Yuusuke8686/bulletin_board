@@ -6,7 +6,7 @@
     <h3>掲示板です！！！！！</h3>
 </div>
 @if(session('errorMessage'))
-    <div class="alert alert-success errorMessage">
+    <div class="alert alert-info errorMessage">
         {{session('errorMessage')}}
     </div>
 @endif

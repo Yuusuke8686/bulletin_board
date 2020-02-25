@@ -39,7 +39,7 @@ class ThreadController extends Controller
             return view('app.thread.index', compact('threads'));
         }
 
-        $errorMessage = 'スレッド作成に失敗しました';
+        session()->flash('errorMessage', 'スレッド作成に失敗しました');
         return view('app.thread.create');
     }
 

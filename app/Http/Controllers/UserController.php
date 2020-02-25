@@ -72,8 +72,9 @@ class UserController extends Controller
             // スレッド一覧
             return view('app.thread.index', compact('threads'));
         }
-        $errorMessage = 'ユーザー登録に失敗しました';
-        return view('app.user.create')->with('errorMessage', $errorMessage);
+        
+        session()->flash('errorMessage', 'ユーザー登録に失敗しました');
+        return view('app.user.create');
     }
 
     /**
@@ -90,8 +91,8 @@ class UserController extends Controller
             return view('app.thread.index', compact('threads'));
         }
 
-        $errorMessage = 'ログインに失敗しました';
-        return view('app.user.top')->with('errorMessage', $errorMessage);
+        session()->flash('errorMessage', 'ログインに失敗しました');
+        return view('app.user.top');
     }
 
     /**
@@ -102,11 +103,11 @@ class UserController extends Controller
     public function logoutUser()
     {
         if(!$this->userService->logout()){
-            $errorMessage = 'ログアウトに失敗しました';
+            session()->flash('errorMessage', 'ログアウトに失敗しました');
         }
-        $errorMessage = 'ログアウトに失敗しました';
+        session()->flash('errorMessage', 'ログアウトに失敗しました');
 
-        return view('app.user.top')->with('errorMessage', $errorMessage);
+        return view('app.user.top');
     }
 
     /**
@@ -124,7 +125,7 @@ class UserController extends Controller
     * @param Admin $admin
     * @return View
     */
-    public function deleteUser(Admin $admin)
+    public function deleteUser()
     {
         if($this->userService->deleteUser()){
             return view('app.user.top');
