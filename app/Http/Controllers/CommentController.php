@@ -52,6 +52,9 @@ class CommentController extends Controller
         $comments = $this->commentService->indexComment($thread_id);
         $threads = $this->threadService->findThread($thread_id);
 
+        //スレッドの更新日時のみ変更する
+        $this->threadService->saveUpdateAt($thread_id);
+
         return view('app.thread.comment', compact('comments', 'threads'));
     }
 

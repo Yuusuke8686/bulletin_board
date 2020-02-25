@@ -52,7 +52,7 @@ class ThreadRepository implements ThreadRepositoryInterface
 
     /**
      * 一件取得
-     * 
+     * @param int $thread_id
      */
     public function find(int $thread_id)
     {
@@ -60,4 +60,17 @@ class ThreadRepository implements ThreadRepositoryInterface
 
         return $thread->find($thread_id);
     }
+
+    /**
+     * update日時更新
+     * @param int $thread_id
+     */
+    public function save(int $thread_id)
+    {
+        $thread = new Thread();
+
+        return $thread->find($thread_id)->save();
+    }
+
+
 }

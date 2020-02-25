@@ -1,0 +1,21 @@
+.thread_head {
+  position: relative;
+  margin: 30px 0;
+  font-size: 1.5em;
+  color: #333;
+  text-align: center;
+}
+
+.thread_head::before,
+.thread_head::after {
+  position: absolute;
+  bottom: 100px;
+  left: 50%;
+  width: 100px;
+  height: 4px;
+  content: '';
+  background: #333;
+  border-radius: 10px;
+  -webkit-transform: translateX(-50%);
+  transform: translateX(-50%);
+}

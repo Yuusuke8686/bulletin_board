@@ -64,13 +64,8 @@ class UserController extends Controller
     public function registUser(UserValiRequest $request)
     {
         if($this->userService->createUser($request)){
-            $threads = $this->threadService->indexThread();
-
-            // 登録後ログインする
-            $this->userService->login($request);
-
-            // スレッド一覧
-            return view('app.thread.index', compact('threads'));
+            session()->flash('errorMessage', 'ユーザー登録完了');
+            return view('app.thread.top');
         }
         
         session()->flash('errorMessage', 'ユーザー登録に失敗しました');

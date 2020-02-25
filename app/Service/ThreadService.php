@@ -53,5 +53,14 @@ class ThreadService
     {
         return $this->threadRepository->find($thread_id);
     }
+
+    /**
+     * スレッド更新日更新
+     * @param int $thread_id
+     */
+    public function saveUpdateAt(int $thread_id)
+    {
+        return $this->threadRepository->save($thread_id);
+    }
     
 }

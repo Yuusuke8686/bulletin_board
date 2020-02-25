@@ -27,7 +27,7 @@
                 <td>{{$thread->id}}</td>
                 <td><a href={{ route('thread.comment', ['thread_id' => $thread->id]) }}>{{$thread->thread_name}}({{$thread->comments()->count()}})</a></td>
                 <td>{{$thread->created_at}}</td>
-                <td>{{$thread->update_at}}</td>
+                <td>{{$thread->updated_at}}</td>
             </tr>
 @endif
 @endforeach

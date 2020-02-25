@@ -18,4 +18,8 @@ interface ThreadRepositoryInterface
 
     //一件取得
     public function find(int $thread_id);
+
+    // 更新日時変更
+    public function save(int $thread_id);
+
 }

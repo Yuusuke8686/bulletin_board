@@ -24,9 +24,9 @@
     </div>
 </div>
 @endif
-<h3>{{$threads->thread_name}}</h3>
+<h3 class="thread_head">{{$threads->thread_name}}</h3>
 <div class="container">
-    @if(isset($comments))
+@isset($comments)
     <div class="mx-3">
         @foreach ($comments as $comment)
         <div class="row"> 
@@ -64,11 +64,11 @@
         </div>
         @endforeach
     </div>
-    @else
+@else
     <div class="mx-3">
         <h3>コメントはまだありません</h3>
     </div>
-    @endif
+@endif
 </div>
 
 <div class="container my-4">

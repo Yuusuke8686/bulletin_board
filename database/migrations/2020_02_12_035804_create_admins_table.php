@@ -18,6 +18,7 @@ class CreateAdminsTable extends Migration
             $table->string('login_id')->unique()->index();
             $table->string('password');
             $table->string('nickname');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
