@@ -10,10 +10,10 @@ class CommentRepository implements CommentRepositoryInterface
     /**
      * 一覧表示
      * @param int $thread_id
+     * @param Comment $comment
      */
-    public function index(int $thread_id)
+    public function index(int $thread_id, Comment $comment)
     {
-        $comment = new Comment();
         // $thread_idをもとにコメントを全件取得する
         return $comment->where('thread_id', $thread_id)->get();
     }
@@ -21,73 +21,71 @@ class CommentRepository implements CommentRepositoryInterface
     /**
      * 投稿機能
      * @param array $commentArray
+     * @param Comment $comment
      */
-    public function create(array $newCommentArray)
+    public function create(array $newCommentArray, Comment $comment)
     {
-        $comment = new Comment();
-
-        $comment->fill([
-            'thread_id' => $newCommentArray['thread_id'],
-            'admin_id' => $newCommentArray['admin_id'],
-            'body' => $newCommentArray['body']
-        ]);
-
-        // 保存する
-        if($comment->save()){
-            return true;
-        }
-        return false;        
+        try {
+            $comment->fill([
+                'thread_id' => $newCommentArray['thread_id'],
+                'admin_id' => $newCommentArray['admin_id'],
+                'body' => $newCommentArray['body']
+            ]);
+    
+            // 保存する
+           return $comment->save();
+        } catch (\Exception $e) {
+            throw $e;
+        }       
     }
 
     /**
      * 編集機能
      * @param array $editCommentArray
+     * @param Comment $comment
      */
-    public function edit(array $editCommentArray)
+    public function edit(array $editCommentArray, Comment $comment)
     {
-        $comment = new Comment();
-
-        // 更新する
-        if($comment->where('id', $editCommentArray['comment_id'])->update(['body'=>$editCommentArray['body']])){
-            return true;
+        try {
+            // 更新する
+            return $comment->where('id', $editCommentArray['comment_id'])->update(['body'=>$editCommentArray['body']]);            
+        } 
+catch (\Exception $e) {
+            throw $e;
         }
-        
-        return false;
     }
 
     /**
      * スレッドID取得
      * @param int $comment_id
+     * @param Comment $comment
      */
-    public function getThreadId(int $comment_id)
+    public function getThreadId(int $comment_id, Comment $comment)
     {
-        $comment = new Comment();
-
         return $comment->where('id', $comment_id)->value('thread_id');
     }
 
     /**
      * コメント一件取得
      * @param int $comment_id
+     * @param Comment $comment
      */
-    public function find(int $comment_id)
+    public function find(int $comment_id, Comment $comment)
     {
-        $comment = new Comment();
-
         return $comment->find($comment_id);
     }
 
     /**
      * コメント削除
-     * @param
+     * @param int $comment_id
+     * @param Comment $comment
      */
-    public function destroy(int $comment_id)
+    public function destroy(int $comment_id, Comment $comment)
     {
-        $comment = new Comment();
-
-        if($comment->destroy($comment_id)){
-            return true;
+        try {
+            return $comment->destroy($comment_id);
+        } catch (\Exception $e) {
+            throw $e;
         }
-        return false;
     }
 }

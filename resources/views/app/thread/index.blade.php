@@ -4,9 +4,9 @@
 <div class="ml-5">
     <h2>スレッド一覧</h2>
 </div>
-@if(session('errorMessage'))
-    <div class="alert alert-success errorMessage">
-        {{session('errorMessage')}}
+@if(session('flashMessage'))
+    <div class="alert alert-success flashMessage">
+        {{session('flashMessage')}}
     </div>
 @endif
 <div class="container">

@@ -9,38 +9,36 @@ class UserRepository implements UserRepositoryInterface
     /**
      * 新規登録
      * @param array $userData
+     * @param Admin $admin
      */
-    public function create(array $userData)
+    public function create(array $userData, Admin $admin)
     {
-        $admin = new Admin();
-
-        $admin->fill([
-            'login_id' => $userData['login_id'],
-            'password' => $userData['password'],
-            'nickname' => $userData['nickname']
-        ]);
-
-        // adminテーブルに保存
-        if($admin->save()){
-            return true;
+        try {
+            $admin->fill([
+                'login_id' => $userData['login_id'],
+                'password' => $userData['password'],
+                'nickname' => $userData['nickname']
+            ]);
+    
+            // adminテーブルに保存
+            return $admin->save();
+            
+        } catch (\Exception $e) {
+            throw $e;
         }
-        return false;
     }
 
     /**
      * 削除機能
      * @param int $userId
+     * @param Admin $admin
      */
-    public function delete(int $userId)
+    public function delete(int $userId, Admin $admin)
     {
-        $admin = new Admin();
-
-        // 削除対象のユーザーを取得
-        $deleteAdmin = $admin->where('id', $userId)->first();
-
-        if($admin->destroy($userId)){
-            return true;
+        try {
+            return $admin->where('id', $userId)->delete();
+        } catch (\Exception $e) {
+            throw $e;
         }
-        return false;
     }
 }

@@ -63,13 +63,18 @@ class UserController extends Controller
      */
     public function registUser(UserValiRequest $request)
     {
-        if($this->userService->createUser($request)){
-            session()->flash('errorMessage', 'ユーザー登録完了');
-            return view('app.thread.top');
+        $flashMessage = null;
+        $nextPage = 'app.user.top';   
+        
+        try {
+            $this->userService->createUser($request);
+            $flashMessage = 'ユーザー登録完了';
+        } catch (\Exception $e) {
+            $flashMessage = 'ユーザー登録に失敗しました';
         }
         
-        session()->flash('errorMessage', 'ユーザー登録に失敗しました');
-        return view('app.user.create');
+        session()->flash('flashMessage', $flashMessage);
+        return view($nextPage);
     }
 
     /**
@@ -79,15 +84,20 @@ class UserController extends Controller
      */
     public function loginUser(LoginUserValiRequest $request)
     {
-        if($this->userService->login($request)){
-            $threads = $this->threadService->indexThread();
-            
-            // スレッド一覧
-            return view('app.thread.index', compact('threads'));
-        }
+        $threads = null;
+        $flashMessage = null;
+        $nextPage = null;   
 
-        session()->flash('errorMessage', 'ログインに失敗しました');
-        return view('app.user.top');
+        try {
+            $threads = $this->threadService->indexThread();
+            $flashMessage = 'ログインしました';
+            $nextPage = 'app.thread.index';
+        } catch (\Exception $e) {
+            $flashMessage = 'ログインに失敗しました';
+            $nextPage = 'app.user.top';   
+        }
+        session()->flash('flashMessage', $flashMessage);
+        return view($nextPage, compact('threads'));
     }
 
     /**
@@ -96,12 +106,16 @@ class UserController extends Controller
     * @return View
     */
     public function logoutUser()
-    {
-        if(!$this->userService->logout()){
-            session()->flash('errorMessage', 'ログアウトに失敗しました');
-        }
-        session()->flash('errorMessage', 'ログアウトに失敗しました');
+    {   
+        $flashMessage = null;
 
+        try {
+            $ths->userService->logout();
+            $flashMessage = 'ログアウトしました';
+        } catch (\Exception $e) {
+            $flashMessage = 'ログアウトに失敗しました';
+        }
+        session()->flash('flashMessage', $flashMessage);
         return view('app.user.top');
     }
 
@@ -117,16 +131,15 @@ class UserController extends Controller
 
     /**
     * ユーザー退会
-    * @param Admin $admin
     * @return View
     */
     public function deleteUser()
     {
-        if($this->userService->deleteUser()){
-            return view('app.user.top');
+        try {
+            $this->userService->deleteUser();
+        } catch (\Exception $e) {
+            return redirect()->back();
         }
-
-        session()>flash('errorMessage', 'ユーザーの削除に失敗しました');
-        return redirect()->back();
+        return view('app.user.top');
     }
 }

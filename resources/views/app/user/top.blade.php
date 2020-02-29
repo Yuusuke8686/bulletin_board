@@ -5,9 +5,9 @@
 <div class="ml-3">
     <h3>掲示板です！！！！！</h3>
 </div>
-@if(session('errorMessage'))
-    <div class="alert alert-info errorMessage">
-        {{session('errorMessage')}}
+@if(session('flashMessage'))
+    <div class="alert alert-info flashMessage">
+        {{session('flashMessage')}}
     </div>
 @endif
 <div class="container">

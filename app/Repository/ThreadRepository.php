@@ -9,11 +9,10 @@ class ThreadRepository implements ThreadRepositoryInterface
 {
     /**
      * 一覧表示
-     * @param NULL
+     * @param Thread $thread
      */
-    public function index()
+    public function index(Thread $thread)
     {
-        $thread = new Thread();
         return $thread->paginate(10);
     }
 
@@ -22,31 +21,34 @@ class ThreadRepository implements ThreadRepositoryInterface
      * @param string $thread_name
      * @param int $admin_id
      */
-    public function create(string $thread_name, int $admin_id)
+    public function create(string $thread_name, int $admin_id, Thread $thread)
     {
-        $thread = new Thread();
-
-        $thread->fill([
-            'thread_name' => $thread_name,
-            'admin_id' => $admin_id
-        ]);
-
-        // 保存
-        if($thread->save()){
-            return true;
+        try {
+            $thread->fill([
+                'thread_name' => $thread_name,
+                'admin_id' => $admin_id
+            ]);
+    
+            // 保存
+            return $thread->save();
+            
+        } catch (\Exception $e) {
+            throw $e;
         }
-        return false;
+
     }
 
     /**
      * 削除機能
      * @param int $thread_id
      */
-    public function delete(int $thread_id)
+    public function delete(int $thread_id, Thread $thread)
     {
-        $thread = new Thread();
-
-        return $thread->find($thread_id)->delete();
+        try {
+            return $thread->find($thread_id)->delete();
+        } catch (\Exception $e) {
+            throw $e;
+        }
       
     }
 
@@ -54,10 +56,8 @@ class ThreadRepository implements ThreadRepositoryInterface
      * 一件取得
      * @param int $thread_id
      */
-    public function find(int $thread_id)
+    public function find(int $thread_id, Thread $thread)
     {
-        $thread = new Thread();
-
         return $thread->find($thread_id);
     }
 
@@ -65,11 +65,13 @@ class ThreadRepository implements ThreadRepositoryInterface
      * update日時更新
      * @param int $thread_id
      */
-    public function save(int $thread_id)
+    public function save(int $thread_id, Thread $thread)
     {
-        $thread = new Thread();
-
-        return $thread->find($thread_id)->save();
+        try {
+            return $thread->find($thread_id)->save();
+        } catch (\Exception $e) {
+            throw $e;
+        }
     }
 
 

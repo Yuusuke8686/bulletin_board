@@ -29,17 +29,22 @@ class CommentService
     /**
      * コメント投稿機能
      * @param CommentValiRequest $request
+     * @param int $thread_id
      */
     public function createComment(CommentValiRequest $request, int $thread_id)
     {
-        // 必要なものを配列でまとめる
-        $newCommentArray = [
-            'thread_id' => $thread_id,
-            'admin_id' => Auth::id(),
-            'body' => $request->body
-        ];
-
-        return $this->commentRepository->create($newCommentArray);
+        try {
+            // 必要なものを配列でまとめる
+            $newCommentArray = [
+                'thread_id' => $thread_id,
+                'admin_id' => Auth::id(),
+                'body' => $request->body
+            ];
+    
+            return $this->commentRepository->create($newCommentArray);
+        } catch (\Exception $e) {
+            throw $e;
+        }
     }
 
     /**
@@ -48,12 +53,17 @@ class CommentService
      */
     public function editComment(CommentValiRequest $request)
     {
-        $editCommentArray = [
-            'body' => $request->body,
-            'comment_id' => $request->comment_id
-        ];
+        try {
+            // 必要な物は配列にまとめる
+            $editCommentArray = [
+                'body' => $request->body,
+                'comment_id' => $request->comment_id
+            ];
 
-        return $this->commentRepository->edit($editCommentArray);
+            return $this->commentRepository->edit($editCommentArray);
+        } catch (\Exception $e) {
+            throw $e;
+        }
     }
 
     /**
@@ -81,8 +91,12 @@ class CommentService
      */
     public function deleteComment(CommentValiRequest $request)
     {
-        $comment_id = $request->comment_id;
-
-        return $this->commentRepository->destroy($comment_id);
+        try {
+            $comment_id = $request->comment_id;
+    
+            return $this->commentRepository->destroy($comment_id);
+        } catch (\Exception $e) {
+            throw $e;
+        }
     }
 }

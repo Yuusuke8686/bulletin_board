@@ -46,15 +46,17 @@ class CommentController extends Controller
      */
     public function createComment(CommentValiRequest $request, int $thread_id)
     {
-        if(!$this->commentService->createComment($request, $thread_id)){
-            session()->flash('errorMessage', 'コメントの投稿に失敗しました');
+        try {
+            $this->commentService->createComment($request, $thread_id);          
+            // スレッドの更新日時のみ更新する
+            $this->threadService->findThread($thread_id);
+        } catch (\Exception $e) {
+            session()->flash('flashMessage', 'コメントの投稿に失敗しました');
         }
+        // スレッドとコメント一覧を取得する
         $comments = $this->commentService->indexComment($thread_id);
         $threads = $this->threadService->findThread($thread_id);
-
-        //スレッドの更新日時のみ変更する
-        $this->threadService->saveUpdateAt($thread_id);
-
+        
         return view('app.thread.comment', compact('comments', 'threads'));
     }
 
@@ -77,9 +79,12 @@ class CommentController extends Controller
      */
     public function editComment(CommentValiRequest $request)
     {
-        if(!$this->commentService->editComment($request)){
-            session()->flash('errorMessage', '正常に更新できませんでした');
+        try {
+            $this->commentService->editComment($request);
+        } catch (\Exception $e) {
+            session()->flash('flashMessage', '正常に更新できませんでした');
         }
+
         // 紐づいているスレッドを取得する
         $thread_id = $this->commentService->getThreadId($request);
         $threads = $this->threadService->findThread($thread_id);
@@ -88,6 +93,7 @@ class CommentController extends Controller
         $comments = $this->commentService->indexComment($thread_id);
 
         return view('app.thread.comment', compact('comments', 'threads'));
+
     }
 
     /**
@@ -105,24 +111,27 @@ class CommentController extends Controller
     /**
      * コメント削除機能
      * @param CommentValiRequest $request
-     * @param Comment $comment
-     * @param Thread $thread
      * @return Factory|View
      */
     public function commentDelete(CommentValiRequest $request)
     {
-        // thread_idを取得する
-        $thread_id = $this->commentService->getThreadId($request);
+        $flashMessage = null;
+        try {
+            // thread_idを取得する
+            $thread_id = $this->commentService->getThreadId($request);
 
-        // 削除
-        if($this->commentService->deleteComment($request)){
-            session()->flash('errorMessage', 'コメント削除に失敗しました');
+            $this->commentService->deleteComment($request);
+            $flashMessage = 'コメントを削除しました';
+        } catch (\Throwable $th) {
+            $flashMessage = 'コメントの削除に失敗しました';
         }
-        session()->flash('errorMessage', 'コメントを削除しました');
+
         //スレッドとコメントを取得
         $threads = $this->threadService->findThread($thread_id);
         $comments = $this->commentService->indexComment($thread_id);
 
+        session()->flash('flashMessage', $flashMessage);
         return view('app.thread.comment', compact('comments', 'threads'));
+
     }
 }

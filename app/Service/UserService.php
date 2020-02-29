@@ -38,13 +38,17 @@ class UserService
      */
     public function createUser(UserValiRequest $request)
     {
-        $userData = [
-            'login_id' => $request->login_id,
-            'password' => Hash::make($request->password),
-            'nickname' => $request->nickname
-        ];
-
-        return $this->userRepository->create($userData);
+        try {
+            $userData = [
+                'login_id' => $request->login_id,
+                'password' => Hash::make($request->password),
+                'nickname' => $request->nickname
+            ];
+    
+            return $this->userRepository->create($userData);
+        } catch (\Exception $e) {
+            throw $e;
+        }
     }
 
     /**
@@ -53,12 +57,16 @@ class UserService
      */
     public function login(LoginUserValiRequest $request)
     {
-        $auth_info = [
-            'login_id' => $request->login_id,
-            'password' => $request->password
-        ];
-
-        return Auth::attempt($auth_info);
+        try {
+            $auth_info = [
+                'login_id' => $request->login_id,
+                'password' => $request->password
+            ];
+    
+            return Auth::attempt($auth_info);
+        } catch (\Exception $e) {
+            throw $e;
+        }
     }
 
     /**
@@ -67,7 +75,11 @@ class UserService
      */
     public function logout()
     {
-        return Auth::logout();
+        try {          
+            return Auth::logout();
+        } catch (\Exception $e) {
+            throw $e;
+        }
     }
 
     /**
@@ -76,11 +88,13 @@ class UserService
      */
     public function deleteUser()
     {
-        $userId = Auth::id();
-        
-        // 削除する前にログアウトする
-        Auth::logout();
-
-        return $this->userRepository->delete($userId);
+        try {
+            $userId = Auth::id();
+            // 削除する前にログアウトする
+            Auth::logout();
+            return $this->userRepository->delete($userId);
+        } catch (\Exception $e) {
+            throw $e;
+        }
     }
 }

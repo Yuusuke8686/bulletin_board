@@ -33,14 +33,22 @@ class ThreadController extends Controller
      */
     public function createThread(ThreadValiRequest $request)
     {
-        if($this->threadService->createThread($request)){
+        $nextPage = null;
+        $threads;
+
+        try {
+            $this->threadService->createThread($request);
+            
+            // スレッド一覧を取得
             $threads = $this->threadService->indexThread();
-
-            return view('app.thread.index', compact('threads'));
+            $nextPage = 'app.thread.index';
+    
+            return view('app.thread.index', compact('threads'));    
+        } catch (\Exception $e) {
+            $nextPage = 'app.thread.create';
+            session()->flash('flashMessage', 'スレッド作成に失敗しました');
         }
-
-        session()->flash('errorMessage', 'スレッド作成に失敗しました');
-        return view('app.thread.create');
+        return view($nextPage);
     }
 
     /**
@@ -74,11 +82,15 @@ class ThreadController extends Controller
      */
     public function deleteThread(Thread $thread, int $thread_id)
     {
-        if(!$this->threadService->deleteThread()){
-            session()->flash('errorMessage', 'スレッドの削除に失敗しました');
-        }
-        $threads = $this->threadService->indexThread();
+        $threads = null;
 
+        try {
+            $this->threadService->deleteThread();
+            // スレッド一覧を取得
+            $threads = $this->threadService->indexThread();
+        } catch (\Exception $e) {
+            session()->flash('flashMessage', 'スレッドの削除に失敗しました');
+        }
         return view('app.thread.index', compact('threads'));
     }
 }

@@ -30,10 +30,14 @@ class ThreadService
      */
     public function createThread(ThreadValiRequest $request)
     {
-        $thread_name = $request->thread_name;
-        $admin_id = Auth::id();
+        try {
+            $thread_name = $request->thread_name;
+            $admin_id = Auth::id();
 
-        return $this->threadRepository->create($thread_name, $admin_id);
+            return $this->threadRepository->create($thread_name, $admin_id);
+        } catch (\Exception $e) {
+            throw $e;
+        }
     }
 
     /**
@@ -42,7 +46,11 @@ class ThreadService
      */
     public function deleteThread(int $thread_id)
     {
-        return $this->threadRepository->delete($thread_id);
+        try {
+            return $this->threadRepository->delete($thread_id);
+        } catch (\Exception $e) {
+            throw $e;
+        }
     }
 
     /**
@@ -60,7 +68,11 @@ class ThreadService
      */
     public function saveUpdateAt(int $thread_id)
     {
-        return $this->threadRepository->save($thread_id);
+        try {
+            return $this->threadRepository->save($thread_id);
+        } catch (\Exception $e) {
+            throw $e;
+        }
     }
     
 }

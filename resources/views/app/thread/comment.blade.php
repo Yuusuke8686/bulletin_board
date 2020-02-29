@@ -15,11 +15,11 @@
     }
 </style>
 <h2>コメント一覧</h2>
-@if(session('errorMessage'))
+@if(session('flashMessage'))
 <div class="row">
     <div class="col align-self-end">
-        <div class="alert alert-info errorMessage">
-            {{session('errorMessage')}}
+        <div class="alert alert-info flashMessage">
+            {{session('flashMessage')}}
         </div>
     </div>
 </div>
