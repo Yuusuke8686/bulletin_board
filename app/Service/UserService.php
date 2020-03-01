@@ -2,11 +2,13 @@
 
 namespace App\Service;
 
+use Exception;
 use App\Http\Requests\UserValiRequest;
 use App\Http\Requests\LoginUserValiRequest;
 use App\Repository\UserRepositoryInterface;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use App\Model\Admin;
 
 class UserService
 {
@@ -35,8 +37,9 @@ class UserService
     /**
      * ユーザー新規登録
      * @param UserValiRequest $request
+     * @param Admin $admin
      */
-    public function createUser(UserValiRequest $request)
+    public function createUser(UserValiRequest $request, Admin $admin)
     {
         try {
             $userData = [
@@ -44,8 +47,7 @@ class UserService
                 'password' => Hash::make($request->password),
                 'nickname' => $request->nickname
             ];
-    
-            return $this->userRepository->create($userData);
+            return $this->userRepository->create($userData, $admin);
         } catch (\Exception $e) {
             throw $e;
         }
@@ -54,6 +56,7 @@ class UserService
     /**
      * ユーザーログイン機能
      * @param LoginUserValiRequest $request
+     * @param Admin $admin
      */
     public function login(LoginUserValiRequest $request)
     {
@@ -84,15 +87,15 @@ class UserService
 
     /**
      * ユーザー削除機能
-     * 
+     * @param Admin $admin
      */
-    public function deleteUser()
+    public function deleteUser(Admin $admin)
     {
         try {
             $userId = Auth::id();
             // 削除する前にログアウトする
             Auth::logout();
-            return $this->userRepository->delete($userId);
+            return $this->userRepository->delete($userId, $admin);
         } catch (\Exception $e) {
             throw $e;
         }

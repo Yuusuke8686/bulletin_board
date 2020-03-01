@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use Exception;
 use App\Model\Admin;
 use Illuminate\Support\Facades\DB;
 
@@ -20,10 +21,10 @@ class UserRepository implements UserRepositoryInterface
             $admin->fill($userData)->save();
             DB::commit();
             
-            return $admin;
+            //return $admin;
         } catch (\Exception $e) {
             DB::rollback();
-            throw $e;
+           throw $e;
         }
     }
 

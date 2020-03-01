@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use Exception;
 use Illuminate\Http\Request;
 use App\Model\Thread;
 use Illuminate\Support\Facades\DB;
@@ -74,7 +75,7 @@ class ThreadRepository implements ThreadRepositoryInterface
     {
         DB::beginTransaction();
         try {
-            $thread->find($thread_id)->save();
+            $thread->find($thread_id)->touch();
             DB::commit();
 
             return $thread;

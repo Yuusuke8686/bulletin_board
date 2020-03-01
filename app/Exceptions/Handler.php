@@ -3,10 +3,12 @@
 namespace App\Exceptions;
 
 use Exception;
+use App\Traits\Notification\SlackNotifiable;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
 {
+    use SlackNotifiable;
     /**
      * A list of the exception types that are not reported.
      *
@@ -34,6 +36,9 @@ class Handler extends ExceptionHandler
      */
     public function report(Exception $exception)
     {
+        if ($this->shouldReport($exception) && app()->environment('production')) {
+            $this->notify(new getExceptionNotification($exception));
+        }
         parent::report($exception);
     }
 

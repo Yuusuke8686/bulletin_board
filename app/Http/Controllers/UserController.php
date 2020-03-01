@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use App\Http\Requests\LoginUserValiRequest;
 use App\Http\Requests\UserValiRequest;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use App\Service\UserService;
 use App\Service\ThreadService;
+use App\Model\Thread;
+use App\Model\Admin;
 
 class UserController extends Controller
 {
@@ -58,16 +61,16 @@ class UserController extends Controller
     /**
      * ユーザー新規登録
      * @param UserValiRequest $request
-     * @param Thread $thread
+     * @param Admin $admin
      * @return View
      */
-    public function registUser(UserValiRequest $request)
+    public function registUser(UserValiRequest $request, Admin $admin)
     {
         $flashMessage = null;
         $nextPage = 'app.user.top';   
         
         try {
-            $this->userService->createUser($request);
+            $this->userService->createUser($request, $admin);
             $flashMessage = 'ユーザー登録完了';
         } catch (\Exception $e) {
             $flashMessage = 'ユーザー登録に失敗しました';
@@ -80,18 +83,26 @@ class UserController extends Controller
     /**
      * ユーザーログイン
      * @param LoginUserValiRequest $request
+     * @param Thread $therad
      * @return View
      */
-    public function loginUser(LoginUserValiRequest $request)
+    public function loginUser(LoginUserValiRequest $request, Thread $thread)
     {
         $threads = null;
         $flashMessage = null;
         $nextPage = null;   
 
         try {
-            $threads = $this->threadService->indexThread();
-            $flashMessage = 'ログインしました';
-            $nextPage = 'app.thread.index';
+            if($this->userService->login($request)){
+                $threads = $this->threadService->indexThread($thread);
+                $flashMessage = 'ログインしました';
+                $nextPage = 'app.thread.index';
+
+            } else{
+                $flashMessage = 'ログインに失敗しました';
+                $nextPage = 'app.user.top';
+            }
+
         } catch (\Exception $e) {
             $flashMessage = 'ログインに失敗しました';
             $nextPage = 'app.user.top';   
@@ -110,7 +121,7 @@ class UserController extends Controller
         $flashMessage = null;
 
         try {
-            $ths->userService->logout();
+            $this->userService->logout();
             $flashMessage = 'ログアウトしました';
         } catch (\Exception $e) {
             $flashMessage = 'ログアウトに失敗しました';
@@ -131,12 +142,13 @@ class UserController extends Controller
 
     /**
     * ユーザー退会
+    * @param Admin $admin
     * @return View
     */
-    public function deleteUser()
+    public function deleteUser(Admin $admin)
     {
         try {
-            $this->userService->deleteUser();
+            $this->userService->deleteUser($admin);
         } catch (\Exception $e) {
             return redirect()->back();
         }

@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use Exception;
 use Illuminate\Http\Request;
 use App\Model\Comment;
 use Illuminate\Support\Facades\DB;
@@ -85,7 +86,7 @@ class CommentRepository implements CommentRepositoryInterface
      */
     public function destroy(int $comment_id, Comment $comment)
     {
-        DB::beginTransation();
+        DB::beginTransaction();
         try {
             $comment->destroy($comment_id);
             DB::commit();

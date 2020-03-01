@@ -17,7 +17,7 @@ Route::get('/top', 'UserController@showTop')->name('top');
 // ログイン
 Route::post('/login', 'UserController@loginUser')->name('login.send');
 
-Route::get('/login', 'UserController@loginUser')->name('login.show');
+Route::get('/login', 'UserController@showTop')->name('login.show');
 
 // ユーザー新規登録画面
 Route::get('/user/create', 'UserController@showRegistForm')->name('user.create');
