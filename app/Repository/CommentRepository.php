@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use Illuminate\Http\Request;
 use App\Model\Comment;
+use Illuminate\Support\Facades\DB;
 
 class CommentRepository implements CommentRepositoryInterface
 {
@@ -25,18 +26,17 @@ class CommentRepository implements CommentRepositoryInterface
      */
     public function create(array $newCommentArray, Comment $comment)
     {
+        DB::beginTransaction();
         try {
-            $comment->fill([
-                'thread_id' => $newCommentArray['thread_id'],
-                'admin_id' => $newCommentArray['admin_id'],
-                'body' => $newCommentArray['body']
-            ]);
-    
             // 保存する
-           return $comment->save();
+           $comment->fill($newCommentArray)->save();
+           DB::commit();
+
+           return $comment;
         } catch (\Exception $e) {
+            DB::rollback();
             throw $e;
-        }       
+        }    
     }
 
     /**
@@ -46,11 +46,14 @@ class CommentRepository implements CommentRepositoryInterface
      */
     public function edit(array $editCommentArray, Comment $comment)
     {
+        DB::beginTransaction();
         try {
-            // 更新する
-            return $comment->where('id', $editCommentArray['comment_id'])->update(['body'=>$editCommentArray['body']]);            
-        } 
-catch (\Exception $e) {
+            $comment->where('id', $editCommentArray['comment_id'])->update(['body'=>$editCommentArray['body']]);            
+            DB::commit();
+
+            return $comment;
+        } catch (\Exception $e) {
+            Db::rollback();
             throw $e;
         }
     }
@@ -82,9 +85,14 @@ catch (\Exception $e) {
      */
     public function destroy(int $comment_id, Comment $comment)
     {
+        DB::beginTransation();
         try {
-            return $comment->destroy($comment_id);
+            $comment->destroy($comment_id);
+            DB::commit();
+
+            return $comment;
         } catch (\Exception $e) {
+            DB::rollback();
             throw $e;
         }
     }

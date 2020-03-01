@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Model\Admin;
+use Illuminate\Support\Facades\DB;
 
 class UserRepository implements UserRepositoryInterface
 {
@@ -13,17 +14,15 @@ class UserRepository implements UserRepositoryInterface
      */
     public function create(array $userData, Admin $admin)
     {
+        DB::beginTransaction();
         try {
-            $admin->fill([
-                'login_id' => $userData['login_id'],
-                'password' => $userData['password'],
-                'nickname' => $userData['nickname']
-            ]);
-    
             // adminテーブルに保存
-            return $admin->save();
+            $admin->fill($userData)->save();
+            DB::commit();
             
+            return $admin;
         } catch (\Exception $e) {
+            DB::rollback();
             throw $e;
         }
     }
@@ -35,9 +34,14 @@ class UserRepository implements UserRepositoryInterface
      */
     public function delete(int $userId, Admin $admin)
     {
+        DB::beginTransaction();
         try {
-            return $admin->where('id', $userId)->delete();
+            $admin->where('id', $userId)->delete();
+            DB::commit();
+
+            return $admin;
         } catch (\Exception $e) {
+            DB::rollback();
             throw $e;
         }
     }

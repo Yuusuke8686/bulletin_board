@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use Illuminate\Http\Request;
 use App\Model\Thread;
+use Illuminate\Support\Facades\DB;
 
 class ThreadRepository implements ThreadRepositoryInterface
 {
@@ -23,19 +24,18 @@ class ThreadRepository implements ThreadRepositoryInterface
      */
     public function create(string $thread_name, int $admin_id, Thread $thread)
     {
+        $threadArray = ['thread_name' => $thread_name, 'admin_id' => $admin_id];
+        DB::beginTransaction();
         try {
-            $thread->fill([
-                'thread_name' => $thread_name,
-                'admin_id' => $admin_id
-            ]);
-    
             // 保存
-            return $thread->save();
+            $thread->fill($threadArray)->save();
+            DB::commit();  
             
+            return $thread;
         } catch (\Exception $e) {
+            DB::rollback();
             throw $e;
         }
-
     }
 
     /**
@@ -44,9 +44,14 @@ class ThreadRepository implements ThreadRepositoryInterface
      */
     public function delete(int $thread_id, Thread $thread)
     {
+        DB::beginTransaction();
         try {
-            return $thread->find($thread_id)->delete();
+            $thread->find($thread_id)->delete();
+            DB::commit();
+
+            return $thread;
         } catch (\Exception $e) {
+            DB::rollback();
             throw $e;
         }
       
@@ -67,9 +72,14 @@ class ThreadRepository implements ThreadRepositoryInterface
      */
     public function save(int $thread_id, Thread $thread)
     {
+        DB::beginTransaction();
         try {
-            return $thread->find($thread_id)->save();
+            $thread->find($thread_id)->save();
+            DB::commit();
+
+            return $thread;
         } catch (\Exception $e) {
+            DB::rollback();
             throw $e;
         }
     }
