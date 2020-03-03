@@ -12,6 +12,7 @@
         "fideloper/proxy": "^4.0",
         "guzzlehttp/guzzle": "^6.5",
         "laravel/framework": "^6.0",
+        "laravel/slack-notification-channel": "^2.0",
         "laravel/tinker": "^1.0",
         "laravel/ui": "^1.1",
         "symfony/translation": "^4.4.4"
