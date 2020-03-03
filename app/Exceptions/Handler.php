@@ -3,12 +3,12 @@
 namespace App\Exceptions;
 
 use Exception;
-use App\Traits\Notification\SlackNotifiable;
+use App\Notifications\Slack;
+use App\Service\Slack\SlackNotifiable;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
 {
-    use SlackNotifiable;
     /**
      * A list of the exception types that are not reported.
      *
@@ -36,9 +36,8 @@ class Handler extends ExceptionHandler
      */
     public function report(Exception $exception)
     {
-        if ($this->shouldReport($exception) && app()->environment('production')) {
-            $this->notify(new getExceptionNotification($exception));
-        }
+        $slackHook = new SlackNotifiable();
+        $slackHook->notify(new Slack($exception));
         parent::report($exception);
     }
 
@@ -51,6 +50,8 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        return parent::render($request, $exception);
+        session()->flash('何らかの例外が発生しました');
+        return redirect()->back();
+        //return parent::render($request, $exception);
     }
 }

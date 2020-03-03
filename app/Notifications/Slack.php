@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -12,20 +13,14 @@ class Slack extends Notification
 {
     use Queueable;
 
-    protected $content;
-    protected $channel;
-    protected $name;
-    protected $icon;
-
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($message)
+    public function __construct(Exception $e)
     {
-        $this->channel = env('SLACK_CHANNEL');
-        $this->content = $message;
+        $this->exception = $e;
     }
 
     /**
@@ -58,10 +53,17 @@ class Slack extends Notification
      */
     public function toSlack($notifiable)
     {
+        $exception = $this->exception;
+
         return (new SlackMessage)
-            ->from($this->name)
-            ->image($this->icon)
-            ->to($this->channel)
-            ->content($this->content);
+            ->from(config('slack.name'))
+            ->to(config('slack.channel'))
+            ->error()
+            ->content('エラーを検知しました')
+            ->attachment(function ($attachment) use ($exception) {
+                $attachment
+                    ->title(get_class($exception))
+                    ->content($exception->getMessage());
+            });
     }
 }
